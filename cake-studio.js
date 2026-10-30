@@ -4,10 +4,9 @@
   function mount() {
     const anchor = document.querySelector('#atelier');
 
-    if (!anchor || document.querySelector('#cake-studio')) return;
-
+if (!anchor || document.querySelector('#cake-customizer')) return;
     const host = document.createElement('section');
-    host.id = 'cake-studio';
+    host.id = 'cake-customizer';
     host.style.scrollMarginTop = '90px';
     anchor.before(host);
 
