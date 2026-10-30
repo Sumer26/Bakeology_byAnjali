@@ -79,15 +79,20 @@ function show(index, focus = false) {
 }
 
 function validateStep(index) {
+  // Validate the cake selection once.
+  if (index === 1 && !cakePicker.validate()) {
+    show(index);
+    cakePicker.validate();
+    return false;
+  }
+
   const inputs = [
     ...steps[index].querySelectorAll('input, select, textarea')
   ];
 
   for (const input of inputs) {
-    if (index === 1 && !cakePicker.validate()) {
-    show(index);
-    return false;
-  }
+    if (input.disabled) continue;
+
     if (input.required && input.type === 'text') {
       input.setCustomValidity(
         input.value.trim()

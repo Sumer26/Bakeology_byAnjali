@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="css/site.css">
   <link rel="stylesheet" href="css/contact.css">
   <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/enquiry-cakes.css">
 
   <script type="module" src="js/site.js"></script>
   <script type="module" src="js/contact.js"></script>
@@ -113,15 +112,184 @@
           <form id="studio-form" novalidate>
 
             <!-- STEP 1: OCCASION -->
-            <fieldset class="studio-step" data-studio-step="1" hidden>
-              <legend>Which cake would you like?</legend>
+            <fieldset class="studio-step is-current" data-studio-step="0">
+              <legend>What's the occasion?</legend>
+              <p>Every celebration has a different feeling.</p>
 
+              <div class="studio-choice-grid">
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Birthday" checked>
+                  <span>Birthday</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Anniversary">
+                  <span>Anniversary</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Wedding / Engagement">
+                  <span>Wedding / Engagement</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Just because">
+                  <span>Just because</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Other celebration">
+                  <span>Something else</span>
+                </label>
+              </div>
+
+              <div class="studio-fields-two">
+                <label class="studio-field">
+                  Date needed <small>(optional)</small>
+                  <input type="date" name="studio-date" id="studio-date">
+                </label>
+
+                <label class="studio-field">
+                  Guests <small>(estimate)</small>
+                  <select name="studio-guests">
+                    <option value="Not sure yet">Not sure yet</option>
+                    <option>Up to 6</option>
+                    <option>7–12</option>
+                    <option>13–20</option>
+                    <option>More than 20</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- STEP 2: DESIGN DIRECTION -->
+            <fieldset class="studio-step" data-studio-step="1" hidden>
+              <legend>What feels like you?</legend>
               <p>
-                Start with a cake from our collection, your favourites,
-                or the design you created.
+                Choose a visual direction. We'll use it as a starting
+                point, not a fixed template.
               </p>
 
-              <div id="enquiry-cake-picker"></div>
+              <div class="studio-style-grid">
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Vintage florals"
+                    data-preview="assets/peach-bloom.jpg"
+                    checked
+                  >
+                  <span>
+                    <img src="assets/peach-bloom.jpg" alt="" loading="lazy">
+                    <b>Vintage florals</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Romantic ribbons"
+                    data-preview="assets/be-mine.jpg"
+                  >
+                  <span>
+                    <img src="assets/be-mine.jpg" alt="" loading="lazy">
+                    <b>Romantic ribbons</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Rich chocolate"
+                    data-preview="assets/cherry-mocha.jpg"
+                  >
+                  <span>
+                    <img src="assets/cherry-mocha.jpg" alt="" loading="lazy">
+                    <b>Rich chocolate</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Colourful & playful"
+                    data-preview="assets/sun-kissed.jpg"
+                  >
+                  <span>
+                    <img src="assets/sun-kissed.jpg" alt="" loading="lazy">
+                    <b>Colourful & playful</b>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- STEP 3: FINISHING TOUCHES -->
+            <fieldset class="studio-step" data-studio-step="2" hidden>
+              <legend>One final touch.</legend>
+              <p>
+                Tell us the flavour you have in mind and any details
+                that matter.
+              </p>
+
+              <label class="studio-field">
+                Flavour inspiration
+                <select name="studio-flavour">
+                  <option value="I'd love a recommendation">
+                    I'd love a recommendation
+                  </option>
+                  <optgroup label="Cream cakes">
+                    <option>Pineapple Crush</option>
+                    <option>Pineacle’o’ Pine</option>
+                    <option>Chococia Heaven</option>
+                    <option>Dark Snow</option>
+                    <option>Kitkat Drum</option>
+                    <option>Oreo Magic</option>
+                    <option>Dusky Mud</option>
+                    <option>Red Velvet</option>
+                    <option>Blue Berry</option>
+                    <option>Love 2 Cappucino</option>
+                    <option>Fruity Love</option>
+                    <option>Day Night Choco</option>
+                  </optgroup>
+                  <optgroup label="Dry cakes">
+                    <option>Vanilla</option>
+                    <option>Chocolate</option>
+                    <option>Choco Chip</option>
+                    <option>Marble</option>
+                    <option>Carrot</option>
+                    <option>Orange</option>
+                    <option>Dry Fruit</option>
+                    <option>Dates and Walnut</option>
+                  </optgroup>
+                </select>
+              </label>
+
+              <label class="studio-field">
+                Your name <small>(required)</small>
+                <input
+                  name="studio-name"
+                  type="text"
+                  placeholder="Your name"
+                  maxlength="80"
+                  autocomplete="name"
+                  required
+                >
+              </label>
+
+              <label class="studio-field">
+                A note for Anjali <small>(optional)</small>
+                <textarea
+                  name="studio-notes"
+                  rows="3"
+                  maxlength="900"
+                  placeholder="Colours, message on the cake, allergies to discuss, or anything else…"
+                ></textarea>
+              </label>
+
+              <div
+                class="studio-summary"
+                id="studio-summary"
+                aria-live="polite"
+              ></div>
             </fieldset>
 
             <div class="studio-actions">
