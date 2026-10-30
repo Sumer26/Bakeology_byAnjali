@@ -1,0 +1,110 @@
+.menu :is(h1,h2) em {
+  color:var(--rose);
+}
+.menu :is(h1,h2) {
+  font:400 clamp(42px,5vw,80px)/1.15 'Playfair Display',serif;
+  letter-spacing:-2.4px;
+  margin:22px 0 0;
+}
+.menu-switch button {
+  background:transparent;
+  border:1px solid var(--line);
+  padding:12px 18px;
+  border-radius:40px;
+  font-size:12px;
+  color:#665a53;
+  transition:.2s;
+}
+.menu {
+  background:#e9e0d5;
+}
+.menu-grid {
+  display:grid;
+  grid-template-columns:.85fr 1.15fr;
+  gap:clamp(50px,10vw,160px);
+}
+.menu-intro p {
+  font-size:14px;
+  line-height:1.85;
+  max-width:340px;
+  color:#665c56;
+}
+.menu-aside {
+  font-size:11px;
+  max-width:325px;
+  color:#8c7f77;
+  line-height:1.7;
+  border-top:1px solid #cbbeb2;
+  padding-top:20px;
+  margin-top:50px;
+}
+.menu-board {
+  background:var(--paper);
+  padding:clamp(22px,3.5vw,55px);
+}
+.menu-switch {
+  display:flex;
+  gap:10px;
+  padding-bottom:25px;
+  border-bottom:1px solid var(--line);
+}
+.menu-switch button.selected {
+  background:var(--ink);
+  color:#fff;
+  border-color:var(--ink);
+}
+.menu-row {
+  display:flex;
+  align-items:baseline;
+  gap:16px;
+  padding:14px 0;
+  border-bottom:1px solid #eee6dd;
+}
+.menu-count {
+  font:10px 'DM Mono',monospace;
+  color:#b1a196;
+  min-width:18px;
+}
+.menu-name {
+  font:17px 'Playfair Display',serif;
+  flex:1;
+}
+.menu-price {
+  font-size:13px;
+  font-weight:600;
+}
+.menu-footnote {
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.7;
+  margin:20px 0 0;
+}
+@media(max-width:760px) {
+  .menu :is(h1,h2) {
+    font-size:clamp(43px,9vw,65px);
+  }
+  .menu-grid {
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+  .menu-aside {
+    margin-top:25px;
+  }
+  .menu-board {
+    margin-top:15px;
+  }
+}
+.menu :is(h1,h2) {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+.menu :is(h1,h2) {
+  font-size: clamp(56px, 6vw, 92px);
+  line-height: 1.02;
+}
+@media (max-width: 760px) {
+  .menu :is(h1,h2) {
+    font-size: clamp(52px, 10vw, 70px);
+  }
+}

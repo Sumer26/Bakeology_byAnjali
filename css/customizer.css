@@ -1,0 +1,349 @@
+.cake-customizer {
+display: block;
+          color: #2e2825;
+          background: #eee7dc;
+          font-family: var(--sans, 'DM Sans', Arial, sans-serif);
+}
+.cake-customizer * {
+box-sizing: border-box;
+}
+.cake-customizer button,
+.cake-customizer input {
+font: inherit;
+}
+.cake-customizer button {
+cursor: pointer;
+}
+.cake-customizer button,
+.cake-customizer a,
+.cake-customizer input {
+-webkit-tap-highlight-color: transparent;
+}
+.cake-customizer button:focus-visible,
+.cake-customizer a:focus-visible,
+.cake-customizer input:focus-visible {
+outline: 2px solid #895946;
+          outline-offset: 4px;
+}
+.cake-customizer .studio {
+max-width: 1600px;
+          margin: auto;
+          padding: 88px clamp(22px, 5.1vw, 92px);
+}
+.cake-customizer .intro {
+display: flex;
+          align-items: end;
+          justify-content: space-between;
+          gap: 32px;
+          margin-bottom: 40px;
+}
+.cake-customizer .kicker,
+.cake-customizer .index,
+.cake-customizer .caption {
+font-family: var(--mono, 'DM Mono', monospace);
+          font-size: 10px;
+          letter-spacing: .12em;
+          line-height: 1.6;
+          text-transform: uppercase;
+}
+.cake-customizer h1 {
+font: 400 clamp(48px, 5.5vw, 88px)/.98
+            var(--serif, 'Instrument Serif', Georgia, serif);
+          letter-spacing: -.035em;
+          margin: 18px 0 0;
+}
+.cake-customizer h1 em {
+font-weight: 400;
+          color: #896757;
+}
+.cake-customizer .intro p {
+max-width: 300px;
+          font-size: 13px;
+          line-height: 1.85;
+          margin: 0;
+          color: #766c64;
+}
+.cake-customizer .layout {
+display: grid;
+          grid-template-columns:
+            minmax(0, 1.15fr) minmax(0, 1fr);
+          border-top: 1px solid #cfc4b6;
+          border-bottom: 1px solid #cfc4b6;
+}
+.cake-customizer .preview {
+position: sticky;
+          top: 20px;
+          align-self: start;
+          min-width: 0;
+}
+.cake-customizer .preview-head {
+display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          padding: 24px 28px 0 0;
+}
+.cake-customizer .text-button {
+border: 0;
+          background: none;
+          padding: 10px 0;
+          color: #69594d;
+          font-size: 12px;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+}
+.cake-customizer .art {
+background: radial-gradient(
+            ellipse at 50% 48%,
+            #fffaf2 0%,
+            #eee7dc 67%
+          );
+}
+.cake-customizer svg {
+display: block;
+          width: 100%;
+          height: auto;
+          max-height: 540px;
+          overflow: visible;
+}
+.cake-customizer .preview-foot {
+display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          border-top: 1px solid #d7cfc5;
+          margin-right: 28px;
+          padding: 21px 0;
+}
+.cake-customizer .preview-foot p {
+font: italic 26px
+            var(--serif, 'Instrument Serif', Georgia, serif);
+          margin: 0;
+}
+.cake-customizer .caption {
+color: #766c64;
+          max-width: 170px;
+          font-size: 9px;
+          text-align: right;
+}
+.cake-customizer .controls {
+padding: 12px 0 26px 40px;
+          border-left: 1px solid #cfc4b6;
+          min-width: 0;
+}
+.cake-customizer fieldset {
+border: 0;
+          border-bottom: 1px solid #d7cfc5;
+          padding: 20px 0 23px;
+          margin: 0;
+          min-width: 0;
+}
+.cake-customizer legend {
+float: left;
+          width: 100%;
+          padding: 0;
+          margin-bottom: 13px;
+          font-size: 13px;
+          font-weight: 500;
+}
+.cake-customizer legend span {
+font: 10px var(--mono, monospace);
+          color: #896757;
+          margin-right: 12px;
+}
+.cake-customizer .choices {
+display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          clear: both;
+}
+.cake-customizer .choices button {
+border: 1px solid #c9bfb2;
+          color: #54483e;
+          background: transparent;
+          min-height: 42px;
+          padding: 10px 15px;
+          font-size: 12px;
+          transition: background .2s, color .2s;
+}
+.cake-customizer .choices button:hover {
+background: #e2d8cb;
+}
+.cake-customizer .choices button[aria-pressed=true] {
+background: #332b26;
+          border-color: #332b26;
+          color: #fffaf2;
+}
+.cake-customizer .swatches {
+gap: 13px;
+}
+.cake-customizer .swatches button {
+display: flex;
+          align-items: center;
+          gap: 7px;
+          border: 0;
+          padding: 6px 2px;
+          min-height: 44px;
+          background: none !important;
+          color: #54483e !important;
+}
+.cake-customizer .swatches i {
+width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background: var(--swatch);
+          box-shadow: inset 0 0 0 1px #332b2630;
+          display: block;
+}
+.cake-customizer .swatches button[aria-pressed=true] i {
+outline: 1px solid #54483e;
+          outline-offset: 4px;
+}
+.cake-customizer .swatches button[aria-pressed=true] {
+text-decoration: underline;
+          text-underline-offset: 4px;
+}
+.cake-customizer .writing {
+padding-top: 24px;
+}
+.cake-customizer .writing label {
+display: block;
+          font-size: 13px;
+          margin-bottom: 12px;
+}
+.cake-customizer input {
+width: 100%;
+          border: 0;
+          border-bottom: 1px solid #aa9987;
+          background: transparent;
+          color: #332b26;
+          border-radius: 0;
+          padding: 10px 0;
+          font-size: 18px;
+}
+.cake-customizer .input-note {
+display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          margin: 9px 0 24px;
+          font-size: 11px;
+          line-height: 1.5;
+          color: #766c64;
+}
+.cake-customizer .cta {
+display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          background: #332b26;
+          color: #fffaf2;
+          text-decoration: none;
+          font-size: 13px;
+          padding: 19px 22px;
+          transition: background .2s;
+}
+.cake-customizer .cta:hover {
+background: #624839;
+}
+.cake-customizer .note {
+font-size: 11px;
+          line-height: 1.7;
+          color: #766c64;
+          margin: 13px 0 0;
+}
+.cake-customizer .sr {
+position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+}
+@media (max-width: 850px) {
+.cake-customizer .studio {
+padding-block: 55px;
+}
+.cake-customizer .intro {
+display: block;
+            margin-bottom: 28px;
+}
+.cake-customizer .intro p {
+margin-top: 22px;
+            max-width: 440px;
+}
+.cake-customizer .layout {
+grid-template-columns: 1fr;
+}
+.cake-customizer .preview {
+position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #eee7dc;
+}
+.cake-customizer .preview-head {
+padding: 5px 0 0;
+}
+.cake-customizer .art svg {
+height: 210px;
+            max-height: 28svh;
+}
+.cake-customizer .preview-foot {
+margin-right: 0;
+            padding: 8px 0;
+}
+.cake-customizer .preview-foot p {
+font-size: 21px;
+}
+.cake-customizer .caption {
+display: none;
+}
+.cake-customizer .controls {
+border-left: 0;
+            padding: 0 0 24px;
+}
+
+}
+@media (prefers-reduced-motion: reduce) {
+.cake-customizer * {
+transition: none !important;
+}
+
+}
+
+.cake-customizer .studio {
+  padding-top: 42px;
+}
+
+.cake-customizer .preview {
+  top: 100px;
+}
+
+.cake-customizer .utilities {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cake-customizer .save-status {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #69594d;
+}
+
+@media (max-width: 850px) {
+  .cake-customizer .preview {
+    top: 76px;
+  }
+
+  .cake-customizer .controls :is(button, input, a) {
+    scroll-margin-top: 420px;
+  }
+}
+
+@media (max-height: 600px) {
+  .cake-customizer .preview {
+    position: static;
+  }
+}

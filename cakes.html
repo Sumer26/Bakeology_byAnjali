@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0e9">
+
+  <title>The collection | Bakeology by Anjali</title>
+  <meta name="description" content="Explore original Bakeology cake designs.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/cakes.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script type="module" src="js/site.js"></script>
+  <script type="module" src="js/gallery.js"></script>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+<header class="header" id="top">
+  <div class="header-inner wrap">
+    <a
+      href="index.html"
+      class="wordmark"
+      aria-label="Bakeology by Anjali, home"
+    >
+      bakeology<span class="wordmark-dot">.</span>
+      <small>BY ANJALI</small>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="cakes.html" aria-current="page">The collection</a><a href="flavours.html">Flavours</a><a href="design.html">Design your cake</a><a href="contact.html">Enquire</a>
+    </nav>
+
+    <a class="header-cta" href="design.html">
+      Design your cake ↗
+    </a>
+
+    <button
+      class="mobile-toggle"
+      type="button"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <nav
+    class="mobile-nav"
+    id="mobile-nav"
+    aria-label="Mobile navigation"
+    hidden
+  >
+    <a href="index.html">Home</a><a href="cakes.html" aria-current="page">The collection</a><a href="flavours.html">Flavours</a><a href="design.html">Design your cake</a><a href="contact.html">Enquire</a>
+  </nav>
+</header>
+
+
+  <main id="main">
+    <section class="collection section-pad" id="collection" aria-labelledby="collection-title">
+      <div class="wrap"><div class="section-header reveal"><div><div class="eyebrow">01 / THE COLLECTION</div><h1 id="collection-title">A feast for <em>the eyes.</em></h1></div><p>From romantic vintage piping to playful celebration designs. Discover a few of our favourite creations.</p></div>
+      <div class="filters reveal" role="group" aria-label="Filter cakes"><button data-filter="all" class="active" aria-pressed="true">All creations <span>17</span></button><button data-filter="vintage" aria-pressed="false">Vintage & floral</button><button data-filter="romantic" aria-pressed="false">Love notes</button><button data-filter="occasion" aria-pressed="false">Celebrations</button><button data-filter="classic" aria-pressed="false">Classic flavours</button></div>
+      <div class="gallery" id="gallery" aria-live="polite"></div>
+      <div class="gallery-note">Every cake tells a different story. <a href="contact.html">Let's create yours <span>↗</span></a></div></div>
+    </section>
+<dialog class="cake-dialog" id="cake-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Close cake details" type="button">×</button><div class="dialog-img"><img id="dialog-image" alt=""/></div><div class="dialog-details"><span class="eyebrow" id="dialog-category"></span><h2 id="dialog-title"></h2><p id="dialog-desc"></p><p class="dialog-note">Custom designs and availability are confirmed directly with the bakery.</p><a class="pill pill-dark" id="dialog-link" target="_blank" rel="noopener noreferrer">Enquire about this cake ↗</a></div></dialog>
+
+  </main>
+
+  <footer class="footer">
+  <div class="wrap footer-top">
+    <div>
+      <a href="index.html" class="footer-logo">
+        bakeology<span>.</span>
+      </a>
+
+      <div class="footer-tag">
+        BY ANJALI · MADE FOR THE MOMENT
+      </div>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a><a href="cakes.html" aria-current="page">The collection</a><a href="flavours.html">Flavours</a><a href="design.html">Design your cake</a><a href="contact.html">Enquire</a>
+    </nav>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <span>
+      © <span id="year">2026</span>
+      BAKEOLOGY BY ANJALI
+    </span>
+    <span>THOUGHTFULLY BAKED. BEAUTIFULLY YOURS.</span>
+    <a href="#top">BACK TO TOP ↑</a>
+  </div>
+</footer>
+
+
+  <noscript>
+    <p class="wrap">
+      Interactive previews and filters need JavaScript.
+      Please call
+      <a href="tel:+918437993098">+91 84379 93098</a>
+      for cake enquiries.
+    </p>
+  </noscript>
+</body>
+</html>

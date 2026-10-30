@@ -1,0 +1,147 @@
+/* Shared layout. Loaded after page-specific styles. */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 76px;
+  background: var(--paper, #faf8f3);
+}
+
+.header-inner {
+  min-height: 76px;
+  height: auto;
+  gap: 24px;
+}
+
+.desktop-nav {
+  display: flex;
+  gap: 24px;
+  margin-left: auto;
+}
+
+.desktop-nav a[aria-current=page],
+.footer-links a[aria-current=page] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.footer-links {
+  flex-wrap: wrap;
+  gap: 16px 22px;
+}
+
+.footer-top > * {
+  min-width: 0;
+}
+
+.mobile-toggle,
+.mobile-nav {
+  display: none;
+}
+
+.mobile-toggle {
+  width: 44px;
+  height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.mobile-toggle span {
+  display: block;
+  width: 22px;
+  height: 1px;
+  margin: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.gallery-status {
+  font-size: 13px;
+  margin-top: 22px;
+  color: var(--muted);
+}
+
+.gallery {
+  min-height: 180px;
+}
+
+.cake-dialog {
+  max-width: min(950px, 94vw);
+  max-height: 90dvh;
+  overflow: auto;
+}
+
+.cake-dialog::backdrop {
+  background: #24191699;
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+.studio-panel {
+  scroll-margin-top: 95px;
+}
+
+.studio-step legend {
+  scroll-margin-top: 100px;
+}
+
+button,
+.filters button,
+.menu-switch button {
+  min-height: 44px;
+}
+
+:is(input, select, textarea) {
+  font-size: 16px;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: flex;
+  }
+
+  .mobile-nav:not([hidden]) {
+    display: flex;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .header-inner {
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

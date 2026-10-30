@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f0e9">
+
+  <title>Design your cake | Bakeology by Anjali</title>
+  <meta name="description" content="Create a cake idea with our live cake customizer.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/customizer.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script type="module" src="js/site.js"></script>
+  <script type="module" src="js/customizer.js"></script>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+<header class="header" id="top">
+  <div class="header-inner wrap">
+    <a
+      href="index.html"
+      class="wordmark"
+      aria-label="Bakeology by Anjali, home"
+    >
+      bakeology<span class="wordmark-dot">.</span>
+      <small>BY ANJALI</small>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a><a href="cakes.html">The collection</a><a href="flavours.html">Flavours</a><a href="design.html" aria-current="page">Design your cake</a><a href="contact.html">Enquire</a>
+    </nav>
+
+    <a class="header-cta" href="design.html">
+      Design your cake ↗
+    </a>
+
+    <button
+      class="mobile-toggle"
+      type="button"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <nav
+    class="mobile-nav"
+    id="mobile-nav"
+    aria-label="Mobile navigation"
+    hidden
+  >
+    <a href="index.html">Home</a><a href="cakes.html">The collection</a><a href="flavours.html">Flavours</a><a href="design.html" aria-current="page">Design your cake</a><a href="contact.html">Enquire</a>
+  </nav>
+</header>
+
+
+  <main id="main">
+    <section
+  class="cake-customizer"
+  id="cake-customizer"
+  aria-labelledby="customizer-title"
+>
+  <div class="studio">
+    <header class="intro">
+      <div>
+        <span class="kicker">
+          Bakeology / The interactive cake studio
+        </span>
+        <h1 id="customizer-title">
+          A little imagination.<br>
+          <em>A cake that's yours.</em>
+        </h1>
+      </div>
+
+      <p>
+        Choose a silhouette. Play with the finishing touches.
+        Watch your idea take shape.
+      </p>
+    </header>
+
+    <div class="layout">
+      <div class="preview">
+        <div class="preview-head">
+          <span class="index">Your cake / Live preview</span>
+          <button
+            type="button"
+            class="text-button"
+            id="surprise"
+          >Surprise me ↗</button>
+        </div>
+
+        <div class="art"><svg
+                id="cake"
+                viewBox="0 0 600 470"
+                role="img"
+                aria-labelledby="cake-title cake-description"
+              >
+                <title id="cake-title">Your custom cake</title>
+                <desc id="cake-description"></desc>
+
+                <defs>
+                  <linearGradient id="cake-side" x1="0" x2="1">
+                    <stop
+                      offset="0"
+                      stop-color="#000"
+                      stop-opacity=".13"
+                    />
+                    <stop
+                      offset=".35"
+                      stop-color="#fff"
+                      stop-opacity=".12"
+                    />
+                    <stop
+                      offset="1"
+                      stop-color="#000"
+                      stop-opacity=".22"
+                    />
+                  </linearGradient>
+
+                  <radialGradient id="cake-top">
+                    <stop stop-color="#fff" stop-opacity=".3"/>
+                    <stop
+                      offset="1"
+                      stop-color="#fff"
+                      stop-opacity="0"
+                    />
+                  </radialGradient>
+
+                  <radialGradient id="cake-shadow">
+                    <stop
+                      stop-color="#5b4431"
+                      stop-opacity=".23"
+                    />
+                    <stop
+                      offset="1"
+                      stop-color="#5b4431"
+                      stop-opacity="0"
+                    />
+                  </radialGradient>
+                </defs>
+
+                <ellipse
+                  cx="300" cy="390" rx="220" ry="34"
+                  fill="url(#cake-shadow)"
+                />
+
+                <ellipse
+                  cx="300" cy="367" rx="208" ry="63"
+                  fill="#cbbba7"
+                />
+
+                <ellipse
+                  cx="300" cy="362" rx="208" ry="63"
+                  fill="#faf5e9"
+                  stroke="#dfd3c3"
+                />
+
+                <g id="drawing"></g>
+              </svg></div>
+
+        <div class="preview-foot">
+          <p id="design-name"></p>
+          <span class="caption">
+            An illustrated idea.<br>
+            Handmade, in real life.
+          </span>
+        </div>
+
+        <div class="utilities">
+          <button
+            type="button"
+            class="text-button"
+            id="reset"
+          >Reset design</button>
+
+          <button
+            type="button"
+            class="text-button"
+            id="share-design"
+          >Copy design link</button>
+        </div>
+
+        <input
+          id="share-url"
+          type="url"
+          aria-label="Shareable design link, including your cake message"
+          readonly
+          hidden
+        >
+      </div>
+
+      <div class="controls">
+        <fieldset><legend><span>01</span>The silhouette</legend><div class="choices"><button type="button" data-key="shape" data-value="Round" aria-pressed="false">Round</button><button type="button" data-key="shape" data-value="Heart" aria-pressed="false">Heart</button><button type="button" data-key="shape" data-value="Square" aria-pressed="false">Square</button></div></fieldset>
+<fieldset><legend><span>02</span>A little more cake</legend><div class="choices"><button type="button" data-key="tiers" data-value="One" aria-pressed="false">One</button><button type="button" data-key="tiers" data-value="Two" aria-pressed="false">Two</button></div></fieldset>
+<fieldset><legend><span>03</span>Your icing palette</legend><div class="choices swatches"><button type="button" data-key="colour" data-value="Ivory" aria-pressed="false"><i style="--swatch:#f1e2c8" aria-hidden="true"></i>Ivory</button><button type="button" data-key="colour" data-value="Rose" aria-pressed="false"><i style="--swatch:#e4a8b1" aria-hidden="true"></i>Rose</button><button type="button" data-key="colour" data-value="Pistachio" aria-pressed="false"><i style="--swatch:#b8c59e" aria-hidden="true"></i>Pistachio</button><button type="button" data-key="colour" data-value="Lavender" aria-pressed="false"><i style="--swatch:#c1b3d6" aria-hidden="true"></i>Lavender</button><button type="button" data-key="colour" data-value="Cocoa" aria-pressed="false"><i style="--swatch:#895946" aria-hidden="true"></i>Cocoa</button></div></fieldset>
+<fieldset><legend><span>04</span>The finishing touch</legend><div class="choices"><button type="button" data-key="finish" data-value="Smooth" aria-pressed="false">Smooth</button><button type="button" data-key="finish" data-value="Piping" aria-pressed="false">Piping</button><button type="button" data-key="finish" data-value="Chocolate drip" aria-pressed="false">Chocolate drip</button></div></fieldset>
+<fieldset><legend><span>05</span>Something on top</legend><div class="choices"><button type="button" data-key="topping" data-value="None" aria-pressed="false">None</button><button type="button" data-key="topping" data-value="Cherries" aria-pressed="false">Cherries</button><button type="button" data-key="topping" data-value="Candles" aria-pressed="false">Candles</button><button type="button" data-key="topping" data-value="Sprinkles" aria-pressed="false">Sprinkles</button></div></fieldset>
+
+
+        <div class="writing">
+          <label for="cake-message">
+            06 / Say it with cake
+          </label>
+
+          <input
+            id="cake-message"
+            maxlength="28"
+            autocomplete="off"
+            aria-describedby="message-help"
+            placeholder="Your little message…"
+          >
+
+          <div class="input-note">
+            <span id="message-help">
+              A short message looks best.
+            </span>
+            <span id="count"></span>
+          </div>
+        </div>
+
+        <a
+          class="cta"
+          id="enquire"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Enquire about this cake
+          <span aria-hidden="true">↗</span>
+        </a>
+
+        <p class="note">
+          Opens WhatsApp with your design choices.
+          Anjali will confirm decoration, flavour,
+          size, price and availability.
+        </p>
+
+        <p class="save-status" id="save-status"></p>
+
+        <p
+          class="save-status"
+          id="announcement"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="footer">
+  <div class="wrap footer-top">
+    <div>
+      <a href="index.html" class="footer-logo">
+        bakeology<span>.</span>
+      </a>
+
+      <div class="footer-tag">
+        BY ANJALI · MADE FOR THE MOMENT
+      </div>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a><a href="cakes.html">The collection</a><a href="flavours.html">Flavours</a><a href="design.html" aria-current="page">Design your cake</a><a href="contact.html">Enquire</a>
+    </nav>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <span>
+      © <span id="year">2026</span>
+      BAKEOLOGY BY ANJALI
+    </span>
+    <span>THOUGHTFULLY BAKED. BEAUTIFULLY YOURS.</span>
+    <a href="#top">BACK TO TOP ↑</a>
+  </div>
+</footer>
+
+
+  <noscript>
+    <p class="wrap">
+      Interactive previews and filters need JavaScript.
+      Please call
+      <a href="tel:+918437993098">+91 84379 93098</a>
+      for cake enquiries.
+    </p>
+  </noscript>
+</body>
+</html>
