@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+
+
 export function createCakeScene(host, onPlace, onMove) {
   const scene = new THREE.Scene();
 
@@ -90,6 +92,13 @@ export function createCakeScene(host, onPlace, onMove) {
   const wickMaterial = new THREE.MeshStandardMaterial({
     color: '#33271f'
   });
+
+  const pearlMaterial = new THREE.MeshPhysicalMaterial({
+  color: '#fff2db',
+  roughness: 0.24,
+  metalness: 0.12,
+  clearcoat: 0.6
+});
 
   const sprinkleMaterials = [
     '#fff2d8', '#cc7894', '#b5bb8d', '#cdb4d4', '#7a4932'
@@ -195,92 +204,103 @@ export function createCakeScene(host, onPlace, onMove) {
     return shape;
   }
 
-  function addTier(shape, base, height) {
-    const geometry = new THREE.ExtrudeGeometry(shape, {
-      depth: height - 0.08,
+  function addTier(shape, base, height, tier, radius) {
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth: height - 0.08,
+    bevelEnabled: true,
+    bevelThickness: 0.04,
+    bevelSize: 0.035,
+    bevelSegments: 4,
+    steps: 1,
+    curveSegments: 40
+  });
+
+  geometry.rotateX(-Math.PI / 2);
+
+  const metadata = { tier, radius, base, height };
+
+  const body = mesh(geometry, icing);
+  body.position.y = base + 0.04;
+  body.userData.surface = metadata;
+
+  if (state.finish === 'Piping') {
+    shape.getSpacedPoints(58).slice(0, -1).forEach(point => {
+      const pip = mesh(
+        new THREE.SphereGeometry(0.078, 16, 12),
+        icing
+      );
+
+      pip.position.set(
+        point.x,
+        base + height + 0.035,
+        -point.y
+      );
+
+      pip.scale.y = 0.68;
+
+      const lower = mesh(
+        new THREE.SphereGeometry(0.055, 12, 10),
+        icing
+      );
+
+      lower.position.set(point.x, base + 0.05, -point.y);
+      lower.scale.y = 0.7;
+    });
+  }
+
+  if (state.finish.toLowerCase().includes('drip')) {
+    const capGeometry = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.025,
       bevelEnabled: true,
-      bevelThickness: 0.04,
-      bevelSize: 0.035,
-      bevelSegments: 4,
-      steps: 1,
+      bevelThickness: 0.015,
+      bevelSize: 0.025,
+      bevelSegments: 3,
       curveSegments: 40
     });
 
-    geometry.rotateX(-Math.PI / 2);
+    capGeometry.rotateX(-Math.PI / 2);
 
-    const body = mesh(geometry, icing);
-    body.position.y = base + 0.04;
+    const cap = mesh(capGeometry, chocolate);
+    cap.position.y = base + height;
+    cap.userData.surface = metadata;
+    cap.userData.cap = true;
 
-    if (state.finish === 'Piping') {
-      const points = shape.getSpacedPoints(58);
+    shape.getSpacedPoints(24).slice(0, -1).forEach((point, index) => {
+      const length = 0.09 + (Math.sin(index * 8.7) + 1) * 0.075;
 
-      points.slice(0, -1).forEach((point, index) => {
-        const pip = mesh(
-          new THREE.SphereGeometry(0.078, 12, 8),
-          icing
-        );
+      const drip = mesh(
+        new THREE.CapsuleGeometry(0.035, length, 6, 12),
+        chocolate
+      );
 
-        pip.position.set(point.x, base + height + 0.035, -point.y);
-        pip.scale.set(1, 0.68, 1);
-        pip.rotation.y = index * 0.8;
-
-        const lower = mesh(
-          new THREE.SphereGeometry(0.055, 10, 8),
-          icing
-        );
-
-        lower.position.set(point.x, base + 0.05, -point.y);
-        lower.scale.y = 0.7;
-      });
-    }
-
-    if (state.finish === 'Chocolate drip') {
-      const capGeometry = new THREE.ExtrudeGeometry(shape, {
-        depth: 0.025,
-        bevelEnabled: true,
-        bevelThickness: 0.015,
-        bevelSize: 0.025,
-        bevelSegments: 3,
-        curveSegments: 40
-      });
-
-      capGeometry.rotateX(-Math.PI / 2);
-
-      const cap = mesh(capGeometry, chocolate);
-      cap.position.y = base + height;
-
-      const edge = shape.getSpacedPoints(24);
-
-      edge.slice(0, -1).forEach((point, index) => {
-        const length = 0.09 + (Math.sin(index * 8.7) + 1) * 0.075;
-
-        const drip = mesh(
-          new THREE.CapsuleGeometry(0.035, length, 4, 8),
-          chocolate
-        );
-
-        drip.position.set(
-          point.x * 1.012,
-          base + height - length / 2,
-          -point.y * 1.012
-        );
-      });
-    }
+      drip.position.set(
+        point.x * 1.012,
+        base + height - length / 2,
+        -point.y * 1.012
+      );
+    });
   }
+}
 
   function rebuildCake() {
     clearGroup(cake);
 
     const tierHeight = state.tiers === 'Two' ? 0.82 : 1.05;
 
-    addTier(outline(state.shape, 1.5), 0.07, tierHeight);
+    addTier(outline(state.shape, 1.5), 0.07, tierHeight, 0, 1.5);
 
     topY = 0.07 + tierHeight;
     topRadius = 1.5;
 
     if (state.tiers === 'Two') {
       topRadius = 1.02;
-      addTier(outline(state.shape, topRadius), topY, 0.78);
+      addTier(
+        outline(state.shape, topRadius),
+        topY,
+        0.78,
+        1,
+        topRadius
+        );
       topY += 0.78;
     }
 
@@ -375,11 +395,16 @@ export function createCakeScene(host, onPlace, onMove) {
     (state.placements || []).forEach((item, index) => {
       const group = new THREE.Group();
       group.userData.index = index;
-      group.position.set(
-        item.x * topRadius,
-        topY + 0.045,
-        item.z * topRadius
-      );
+      const placement = placementWorld(item);
+
+        group.position.copy(placement.point);
+
+        if (item.surface === 'side') {
+        group.quaternion.setFromUnitVectors(
+            new THREE.Vector3(0, 1, 0),
+            placement.normal
+        );
+        }
 
       decorations.add(group);
 
@@ -420,6 +445,15 @@ export function createCakeScene(host, onPlace, onMove) {
         );
 
         wick.position.y = 0.44;
+        } else if (item.type === 'Pearls') {
+        const pearl = mesh(
+            new THREE.SphereGeometry(0.035, 18, 14),
+            pearlMaterial,
+            group
+        );
+
+        pearl.position.y = 0.025;
+
       } else if (item.type === 'Sprinkles') {
         // A repeatable little scatter; it does not jump when redrawn.
         for (let i = 0; i < 9; i++) {
@@ -447,7 +481,13 @@ export function createCakeScene(host, onPlace, onMove) {
   function update(nextState, colour) {
     state = nextState;
     icing.color.set(colour);
+    const dripColours = {
+        'Chocolate drip': '#381c13',
+        'White chocolate drip': '#f3dfb6',
+        'Caramel drip': '#b66b2e'
+        };
 
+chocolate.color.set(dripColours[state.finish] || '#381c13');
     const nextKey = [
       state.shape, state.tiers, state.finish
     ].join('|');
@@ -462,37 +502,49 @@ export function createCakeScene(host, onPlace, onMove) {
   }
 
   function view(nextMode = 'rotate') {
-    mode = nextMode;
-    host.dataset.mode = mode;
+  const sideView = nextMode === 'side';
 
-    const target = new THREE.Vector3(
+  mode = sideView ? 'decorate' : nextMode;
+  host.dataset.mode = mode;
+
+  const target = new THREE.Vector3(
+    0,
+    sideView ? topY * 0.45 : mode === 'rotate' ? topY * 0.48 : topY,
+    0
+  );
+
+  let position;
+
+  if (sideView) {
+    const direction = camera.position.clone().sub(controls.target);
+    direction.y = 0;
+
+    if (direction.lengthSq() < 0.01) direction.set(0, 0, 1);
+
+    direction.normalize().multiplyScalar(5.8);
+    position = target.clone().add(direction);
+    position.y += 0.7;
+  } else if (mode === 'rotate') {
+    position = new THREE.Vector3(3.7, 4.2, 6.4);
+    position.sub(target).normalize().multiplyScalar(8.2).add(target);
+  } else {
+    position = new THREE.Vector3(
       0,
-      mode === 'rotate' ? topY * 0.48 : topY,
-      0
+      target.y + (mode === 'write' ? 4.1 : 5.3),
+      0.8
     );
-
-    const distance = mode === 'rotate'
-      ? 8.2
-      : mode === 'write' ? 4.1 : 4.9;
-
-    const position = mode === 'rotate'
-      ? new THREE.Vector3(3.7, 4.2, 6.4)
-      : new THREE.Vector3(0, target.y + distance, 0.8);
-
-    if (mode === 'rotate') {
-      position.sub(target).normalize().multiplyScalar(distance).add(target);
-    }
-
-    transition = {
-      start: performance.now(),
-      position: camera.position.clone(),
-      target: controls.target.clone(),
-      endPosition: position,
-      endTarget: target
-    };
-
-    controls.enabled = false;
   }
+
+  transition = {
+    start: performance.now(),
+    position: camera.position.clone(),
+    target: controls.target.clone(),
+    endPosition: position,
+    endTarget: target
+  };
+
+  controls.enabled = false;
+}
 
   function setRay(event) {
     const bounds = renderer.domElement.getBoundingClientRect();
@@ -505,10 +557,288 @@ export function createCakeScene(host, onPlace, onMove) {
     raycaster.setFromCamera(pointer, camera);
   }
 
-  function hitSurface(event) {
-    setRay(event);
-    return raycaster.intersectObject(surface)[0]?.point;
+  function tierInfo(tier) {
+  const lowerHeight = state.tiers === 'Two' ? 0.82 : 1.05;
+
+  return tier === 1 && state.tiers === 'Two'
+    ? { radius: 1.02, base: 0.07 + lowerHeight, height: 0.78 }
+    : { radius: 1.5, base: 0.07, height: lowerHeight };
+}
+
+function placementWorld(item) {
+  // Older saved decorations belong to the uppermost tier.
+  const tier = item.tier ?? (state.tiers === 'Two' ? 1 : 0);
+  const info = tierInfo(tier);
+  const side = item.surface === 'side';
+
+  const normal = side
+    ? new THREE.Vector3(item.nx, 0, item.nz).normalize()
+    : new THREE.Vector3(0, 1, 0);
+
+  const point = new THREE.Vector3(
+    item.x * info.radius,
+    side
+      ? info.base + item.y * info.height
+      : info.base + info.height + 0.045,
+    item.z * info.radius
+  );
+
+  if (side) point.addScaledVector(normal, 0.012);
+
+  return { point, normal };
+}
+
+function decorationRadius(type) {
+  return {
+    Cherries: 0.11,
+    Candles: 0.05,
+    Pearls: 0.045,
+    Sprinkles: 0.075
+  }[type] || 0.08;
+}
+
+function distanceToEdge(point, shape) {
+  const points = shape.getPoints(80);
+  let closest = Infinity;
+
+  const p = new THREE.Vector2(point.x, -point.z);
+
+  for (let i = 0; i < points.length; i++) {
+    const a = points[i];
+    const b = points[(i + 1) % points.length];
+    const ab = b.clone().sub(a);
+    const denominator = ab.lengthSq();
+
+    const t = denominator
+      ? THREE.MathUtils.clamp(p.clone().sub(a).dot(ab) / denominator, 0, 1)
+      : 0;
+
+    closest = Math.min(
+      closest,
+      p.distanceTo(a.clone().addScaledVector(ab, t))
+    );
   }
+
+  return closest;
+}
+
+function hitSurface(event, type, ignoreIndex) {
+  setRay(event);
+  scene.updateMatrixWorld(true);
+
+  // First visible cake surface wins. Piping and hanging drips
+  // intentionally have no placement metadata.
+  const hit = raycaster.intersectObjects(cake.children, true)[0];
+
+  if (!hit) return { error: 'Place the decoration on the cake.' };
+
+  const info = hit.object.userData.surface;
+
+  if (!info) {
+    return { error: 'Leave the piping and hanging drips clear.' };
+  }
+
+  const normal = hit.face.normal.clone()
+    .transformDirection(hit.object.matrixWorld);
+
+  const isTop = normal.y > 0.9;
+  const isSide = Math.abs(normal.y) < 0.15;
+
+  if (!isTop && !isSide) {
+    return { error: 'Move a little away from the rounded edge.' };
+  }
+
+  if (isSide && !['Pearls', 'Sprinkles'].includes(type)) {
+    return { error: 'Cherries and candles need a flat top. Use pearls or sprinkles on the sides.' };
+  }
+
+  if (isSide && hit.object.userData.cap) {
+    return { error: 'Keep the edge of the drip coating clear.' };
+  }
+
+  const radius = decorationRadius(type);
+  const localHeight = hit.point.y - info.base;
+
+  if (isTop) {
+    const border = state.finish === 'Piping' ? 0.11 : 0.035;
+
+    if (
+      distanceToEdge(
+        hit.point,
+        outline(state.shape, info.radius)
+      ) < radius + border
+    ) {
+      return { error: 'Move inward so the decoration clears the edge and border.' };
+    }
+
+    // Reserve space around the upper tier when placing on the lower tier.
+    if (info.tier === 0 && state.tiers === 'Two') {
+      if (
+        distanceToEdge(
+          hit.point,
+          outline(state.shape, 1.02)
+        ) < radius + 0.1
+      ) {
+        return { error: 'Leave a little space around the upper tier.' };
+      }
+    }
+
+    // Keep the message area clear on the uppermost tier.
+    const highestTier = state.tiers === 'Two' ? 1 : 0;
+
+    if (
+      state.message.trim() &&
+      info.tier === highestTier &&
+      Math.abs(hit.point.x) < info.radius * 0.7 + radius &&
+      Math.abs(hit.point.z) < info.radius * 0.263 + radius
+    ) {
+      return { error: 'This space is reserved for your message.' };
+    }
+  } else {
+    const topClearance = state.finish.toLowerCase().includes('drip')
+      ? 0.33
+      : state.finish === 'Piping' ? 0.14 : 0.07;
+
+    if (
+      localHeight < radius + 0.09 ||
+      localHeight > info.height - topClearance - radius
+    ) {
+      return { error: 'Place side decorations between the bottom border and the top finish.' };
+    }
+  }
+
+  const horizontalNormal = new THREE.Vector3(normal.x, 0, normal.z);
+
+  if (horizontalNormal.lengthSq()) horizontalNormal.normalize();
+
+  const placement = {
+    type,
+    tier: info.tier,
+    surface: isTop ? 'top' : 'side',
+    x: hit.point.x / info.radius,
+    z: hit.point.z / info.radius,
+    y: isTop ? 1 : localHeight / info.height,
+    nx: isTop ? 0 : horizontalNormal.x,
+    nz: isTop ? 0 : horizontalNormal.z
+  };
+
+  const world = placementWorld(placement);
+
+  const overlaps = state.placements.some((item, index) => {
+    if (index === ignoreIndex) return false;
+
+    return placementWorld(item).point.distanceTo(world.point) <
+      radius + decorationRadius(item.type);
+  });
+
+  if (overlaps) {
+    return { error: 'Leave a little space between decorations.' };
+  }
+
+  return { placement, world };
+}
+
+renderer.domElement.addEventListener('pointerdown', event => {
+  if (mode !== 'decorate' || transition || !event.isPrimary) return;
+
+  setRay(event);
+  scene.updateMatrixWorld(true);
+
+  const decorationHit =
+    raycaster.intersectObjects(decorations.children, true)[0];
+
+  const cakeHit = raycaster.intersectObjects(cake.children, true)[0];
+
+  let object = decorationHit &&
+    (!cakeHit || decorationHit.distance <= cakeHit.distance + 0.02)
+      ? decorationHit.object
+      : null;
+
+  while (object && object.parent !== decorations) {
+    object = object.parent;
+  }
+
+  pointerStart = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    index: object?.userData.index,
+    result: null
+  };
+
+  renderer.domElement.setPointerCapture(event.pointerId);
+});
+
+renderer.domElement.addEventListener('pointermove', event => {
+  if (!pointerStart || pointerStart.id !== event.pointerId) return;
+  if (pointerStart.index === undefined) return;
+
+  const item = state.placements[pointerStart.index];
+
+  const result = hitSurface(
+    event,
+    item.type,
+    pointerStart.index
+  );
+
+  pointerStart.result = result;
+
+  if (!result.placement) return;
+
+  const object = decorations.children[pointerStart.index];
+
+  object.position.copy(result.world.point);
+  object.quaternion.setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    result.world.normal
+  );
+});
+
+renderer.domElement.addEventListener('pointerup', event => {
+  if (!pointerStart || pointerStart.id !== event.pointerId) return;
+
+  const start = pointerStart;
+  pointerStart = null;
+
+  if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+    renderer.domElement.releasePointerCapture(event.pointerId);
+  }
+
+  if (start.index !== undefined) {
+    if (start.result?.placement) {
+      const p = start.result.placement;
+      onMove(start.index, p.x, p.z, p);
+    } else {
+      rebuildDecorations();
+      if (start.result?.error) onReject?.(start.result.error);
+    }
+    return;
+  }
+
+  if (
+    Math.hypot(event.clientX - start.x, event.clientY - start.y) > 10
+  ) return;
+
+  if (!['Cherries', 'Candles', 'Sprinkles', 'Pearls'].includes(state.topping)) {
+    onReject?.('Choose a topping first.');
+    return;
+  }
+
+  const result = hitSurface(event, state.topping);
+
+  if (!result.placement) {
+    onReject?.(result.error);
+    return;
+  }
+
+  const p = result.placement;
+  onPlace(p.x, p.z, p);
+});
+
+renderer.domElement.addEventListener('pointercancel', () => {
+  pointerStart = null;
+  rebuildDecorations();
+});
 
   renderer.domElement.addEventListener('pointerdown', event => {
     if (mode !== 'decorate' || transition || !event.isPrimary) return;

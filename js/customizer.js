@@ -1,5 +1,7 @@
 import { initial, choices, colours, whatsapp } from './config.js';
 import { createCakeScene } from './cake-scene.js';
+import { createPricePanel } from './cake-pricing.js';
+
 
 const root = document.querySelector('.cake-customizer');
 const $ = selector => root.querySelector(selector);
@@ -7,8 +9,24 @@ const $ = selector => root.querySelector(selector);
 const STORAGE_KEY = 'bakeology.design.v2';
 const LEGACY_KEY = 'bakeology.design.v1';
 
-const TOPPINGS = ['Cherries', 'Candles', 'Sprinkles'];
+const TOPPINGS = ['Cherries', 'Candles', 'Sprinkles', 'Pearls'];
 const history = [];
+
+choices.finish = [
+  'Smooth',
+  'Piping',
+  'Chocolate drip',
+  'White chocolate drip',
+  'Caramel drip'
+];
+
+choices.topping = [
+  'None',
+  'Cherries',
+  'Candles',
+  'Sprinkles',
+  'Pearls'
+];
 
 let state = loadState();
 let scene;
@@ -46,8 +64,52 @@ hint.setAttribute('aria-live', 'polite');
 
 $('.art').after(toolbar, hint);
 
+const sideButton = document.createElement('button');
+sideButton.type = 'button';
+sideButton.dataset.view = 'side';
+sideButton.setAttribute('aria-pressed', 'false');
+sideButton.textContent = 'Decorate sides';
+
+toolbar.querySelector('[data-view="write"]').before(sideButton);
+
+function addChoiceButtons(key) {
+  const example = root.querySelector(`[data-key="${key}"]`);
+  if (!example) return;
+
+  const container = example.parentElement;
+
+  choices[key].forEach(value => {
+    const exists = [...container.querySelectorAll('[data-key]')]
+      .some(button => button.dataset.value === value);
+
+    if (exists) return;
+
+    const button = document.createElement('button');
+
+    button.type = 'button';
+    button.dataset.key = key;
+    button.dataset.value = value;
+    button.setAttribute('aria-pressed', 'false');
+    button.textContent = value;
+
+    container.append(button);
+  });
+}
+
+addChoiceButtons('finish');
+addChoiceButtons('topping');
+
+const updatePrice = createPricePanel($('.preview'));
+
 try {
-  scene = createCakeScene($('.art'), placeTopping, moveTopping);
+  scene = createCakeScene(
+  $('.art'),
+  placeTopping,
+  moveTopping,
+  message => {
+    hint.textContent = message;
+  }
+);
   render();
   setView('rotate');
 } catch (error) {
@@ -70,18 +132,41 @@ function validate(value) {
   }
 
   if (Array.isArray(value.placements)) {
-    safe.placements = value.placements
-      .filter(item =>
-        item &&
-        TOPPINGS.includes(item.type) &&
-        Number.isFinite(item.x) &&
-        Number.isFinite(item.z) &&
-        Math.abs(item.x) <= 1 &&
-        Math.abs(item.z) <= 1
+  safe.placements = value.placements
+    .filter(item =>
+      item &&
+      TOPPINGS.includes(item.type) &&
+      Number.isFinite(item.x) &&
+      Number.isFinite(item.z) &&
+      Math.abs(item.x) <= 1.1 &&
+      Math.abs(item.z) <= 1.1 &&
+      (
+        item.surface !== 'side' ||
+        (
+          ['Pearls', 'Sprinkles'].includes(item.type) &&
+          Number.isFinite(item.y) &&
+          item.y > 0 &&
+          item.y < 1 &&
+          Number.isFinite(item.nx) &&
+          Number.isFinite(item.nz) &&
+          Math.hypot(item.nx, item.nz) > 0.5
+        )
       )
-      .slice(0, 60)
-      .map(({ type, x, z }) => ({ type, x, z }));
-  }
+    )
+    .slice(0, 60)
+    .map(item => ({
+      type: item.type,
+      x: item.x,
+      z: item.z,
+      tier: safe.tiers === 'Two'
+        ? (item.tier === 0 ? 0 : 1)
+        : 0,
+      surface: item.surface === 'side' ? 'side' : 'top',
+      y: item.surface === 'side' ? item.y : 1,
+      nx: item.surface === 'side' ? item.nx : 0,
+      nz: item.surface === 'side' ? item.nz : 0
+    }));
+}
 
   return safe;
 }
@@ -156,6 +241,7 @@ function designURL() {
 }
 
 function render() {
+  updatePrice(state);
   scene?.update(state, colours[state.colour]);
 
   root.querySelectorAll('[data-key]').forEach(button => {
@@ -220,41 +306,46 @@ function setView(nextMode) {
     decorate: state.topping === 'None'
       ? 'Choose cherries, candles or sprinkles, then tap the cake top.'
       : `Tap the cake top to add ${state.topping.toLowerCase()}. Drag a decoration to move it.`,
-    write: 'Edit your message below. Choose “View finished cake” when you’re ready.'
+    write: 'Edit your message below. Choose “View finished cake” when you’re ready.',
+    side: 'Use pearls or sprinkles on the sides. Rotate first to choose a different side, then return here.'
   };
 
   hint.textContent = hints[mode];
 }
 
-function placeTopping(x, z) {
+function placeTopping(x, z, placement) {
   if (!TOPPINGS.includes(state.topping)) {
     hint.textContent = 'Choose a topping first.';
     return;
   }
 
   if (state.placements.length >= 60) {
-    hint.textContent = 'You have reached 60 decorations. Undo or clear some to add more.';
+    hint.textContent = 'You have reached 60 decorations. Undo or clear some first.';
     return;
   }
 
   snapshot();
 
   state.placements.push({
+    ...placement,
     type: state.topping,
     x,
     z
   });
 
   render();
+
+  hint.textContent = `${state.topping} added. Your estimate has updated.`;
 }
 
-function moveTopping(index, x, z) {
+function moveTopping(index, x, z, placement) {
   if (!state.placements[index]) return;
 
   snapshot();
 
   state.placements[index] = {
-    ...state.placements[index],
+    ...placement,
+    type: state.placements[index].type,
     x,
     z
   };
@@ -328,17 +419,6 @@ root.addEventListener('click', async event => {
 
     state.placements = [];
 
-    if (TOPPINGS.includes(state.topping)) {
-      for (let i = 0; i < 7; i++) {
-        const angle = i / 7 * Math.PI * 2;
-
-        state.placements.push({
-          type: state.topping,
-          x: Math.cos(angle) * 0.52,
-          z: Math.sin(angle) * 0.52
-        });
-      }
-    }
 
     render();
     setView('rotate');
@@ -354,17 +434,25 @@ root.addEventListener('click', async event => {
   state[key] = value;
 
   // Different outlines need fresh placement to avoid floating decorations.
-  if (key === 'shape') {
-    state.placements = [];
-  }
+const changesSurface = ['shape', 'tiers', 'finish'].includes(key);
+const removedDecorations = changesSurface && state.placements.length > 0;
+
+if (changesSurface) {
+  state.placements = [];
+}
 
   render();
 
   if (key === 'topping') {
-    setView('decorate');
-  } else if (key === 'shape' || key === 'tiers') {
-    setView('rotate');
+  setView(mode === 'side' ? 'side' : 'decorate');
+} else if (changesSurface) {
+  setView('rotate');
+
+  if (removedDecorations) {
+    hint.textContent =
+      'The cake surface changed, so decorations were cleared. Undo restores the previous design.';
   }
+}
 });
 
 $('#cake-message').addEventListener('focus', () => {
@@ -375,4 +463,6 @@ $('#cake-message').addEventListener('focus', () => {
 $('#cake-message').addEventListener('input', event => {
   state.message = event.target.value.slice(0, 28);
   render();
+
+  
 });

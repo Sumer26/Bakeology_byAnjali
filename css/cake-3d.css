@@ -103,3 +103,66 @@
     height: 310px;
   }
 }
+
+.cake-customizer .cake-price {
+  margin-top: 22px;
+  padding: 24px;
+  border: 1px solid #cdbfaf;
+  background: #faf6ee;
+  color: #493b31;
+}
+
+.cake-customizer .cake-price__heading,
+.cake-customizer .cake-price__lines > div,
+.cake-customizer .cake-price__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.cake-customizer .cake-price__heading {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #ded3c5;
+  font-size: 12px;
+}
+
+.cake-customizer .cake-price__heading > :last-child {
+  font: 9px 'DM Mono', monospace;
+  letter-spacing: 1px;
+  color: #946752;
+  white-space: nowrap;
+}
+
+.cake-customizer .cake-price__lines {
+  margin: 18px 0;
+}
+
+.cake-customizer .cake-price__lines > div {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cake-customizer .cake-price__lines dd {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cake-customizer .cake-price__total {
+  padding-top: 18px;
+  border-top: 1px solid #ded3c5;
+  font-size: 13px;
+}
+
+.cake-customizer .cake-price__total strong {
+  font: 400 30px 'Playfair Display', serif;
+  white-space: nowrap;
+}
+
+.cake-customizer .cake-price > p {
+  margin: 16px 0 0;
+  color: #796b60;
+  font-size: 11px;
+  line-height: 1.7;
+}
