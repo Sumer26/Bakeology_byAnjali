@@ -11,6 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="script.js" defer></script>
+  <!-- New editorial font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Load after the original styles.css -->
+  <link rel="stylesheet" href="experience.css" />
+  <!-- Load after the original script.js -->
+  <script src="experience.js" defer></script>
+
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -18,7 +28,9 @@
     <div class="header-inner wrap">
       <a href="#top" class="wordmark" aria-label="Bakeology by Anjali, home">bakeology<span class="wordmark-dot">.</span><small>BY ANJALI</small></a>
       <nav class="desktop-nav" aria-label="Main navigation"><a href="#collection">The collection</a><a href="#story">Our approach</a><a href="#menu">Flavours & prices</a></nav>
-      <a class="header-cta" href="#enquire">Let's make a cake <span aria-hidden="true">↗</span></a>
+      <a class="header-cta" href="#cake-studio">
+        Design your cake <span aria-hidden="true">↗</span>
+      </a>
       <button class="mobile-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
     </div>
     <nav class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#collection">The collection</a><a href="#story">Our approach</a><a href="#menu">Flavours & prices</a><a href="#enquire">Make an enquiry</a></nav>
@@ -27,8 +39,14 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
         <div class="hero-kicker"><span class="tiny-star">✳</span> MADE FOR THE MOMENT</div>
-        <h1 id="hero-title">A little<br/>more <em>magic</em><br/>in every slice.</h1>
-        <p>Considered details. Beautiful finishes. Cakes that turn your favourite moments into lasting memories.</p>
+        <h1 id="hero-title">
+          Every detail<br />
+          has a <em>story.</em>
+        </h1>
+        <p>
+          Intricate piping, thoughtful colour, and cakes made
+          around your moment. A small celebration of all the details.
+        </p>
         <a class="pill pill-light" href="#collection">Explore our cakes <span aria-hidden="true">↗</span></a>
         <div class="hero-bottom"><span>BAKEOLOGY BY ANJALI</span><span>HANDCRAFTED WITH HEART</span></div>
       </div>
@@ -41,9 +59,358 @@
       <div class="gallery" id="gallery" aria-live="polite"></div>
       <div class="gallery-note">Every cake tells a different story. <a href="#enquire">Let's create yours <span>↗</span></a></div></div>
     </section>
+    
+    <section class="atelier" id="atelier" aria-labelledby="atelier-title">
+      <div class="wrap atelier-heading reveal">
+        <span class="eyebrow">02 / THE ART OF THE DETAIL</span>
+        <h2 id="atelier-title">
+          A little theatre.<br><em>A lot of heart.</em>
+        </h2>
+        <p>
+          Every creation has its own character. Scroll through a few
+          of the details that make a cake feel personal.
+        </p>
+      </div>
+
+      <div class="wrap atelier-layout">
+        <div class="atelier-sticky">
+          <div
+            class="atelier-frame"
+            role="img"
+            id="atelier-image-description"
+            aria-label="Peach-coloured cake with piped roses and ribbons"
+          >
+            <img
+              src="assets/peach-bloom.jpg"
+              alt=""
+              class="atelier-photo is-current"
+              data-scene-photo="0"
+              loading="lazy"
+            >
+            <img
+              src="assets/cherry-mocha.jpg"
+              alt=""
+              class="atelier-photo"
+              data-scene-photo="1"
+              loading="lazy"
+            >
+            <img
+              src="assets/blue-belle.jpg"
+              alt=""
+              class="atelier-photo"
+              data-scene-photo="2"
+              loading="lazy"
+            >
+            <div class="atelier-image-footer">
+              <span>THE BAKEOLOGY EDIT</span>
+              <span id="atelier-photo-index">01 / 03</span>
+            </div>
+          </div>
+          <div class="atelier-meter" aria-hidden="true">
+            <span id="atelier-meter-fill"></span>
+          </div>
+        </div>
+
+        <div class="atelier-chapters">
+          <article class="atelier-chapter" data-scene="0">
+            <span class="atelier-chapter-num">01 — THE COLOUR</span>
+            <h3>A mood, before anything else.</h3>
+            <p>
+              Soft peach, warm ivory, a hint of rose. Sometimes
+              the right palette says everything before the first slice.
+            </p>
+          </article>
+
+          <article class="atelier-chapter" data-scene="1">
+            <span class="atelier-chapter-num">02 — THE DETAIL</span>
+            <h3>Every little flourish matters.</h3>
+            <p>
+              Layered piping, delicate bows and thoughtful finishing
+              touches turn a familiar celebration into something
+              unmistakably yours.
+            </p>
+          </article>
+
+          <article class="atelier-chapter" data-scene="2">
+            <span class="atelier-chapter-num">03 — THE FEELING</span>
+            <h3>Worth gathering around.</h3>
+            <p>
+              For the people, the photographs and the memories that
+              last long after the candles are blown out.
+            </p>
+            <a href="#cake-studio" class="atelier-chapter-link">
+              Let's imagine yours <span aria-hidden="true">↗</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="interlude" aria-label="Our philosophy"><div class="interlude-image"><img src="assets/lavender-love.jpg" alt="Lavender and ivory cake with intricate purple piping and flowers" loading="lazy" /></div><div class="interlude-copy"><span class="eyebrow">SMALL DETAILS. BIG FEELINGS.</span><p>Made to be<br/><em>remembered.</em></p><span class="interlude-sub">Beautiful on the outside. Made with care on the inside.</span></div></section>
     <section class="story section-pad wrap" id="story"><div class="eyebrow reveal">02 / THE BAKEOLOGY WAY</div><div class="story-grid"><h2 class="reveal">Thoughtfully baked.<br/><em>Beautifully yours.</em></h2><div class="story-right reveal"><p>At Bakeology by Anjali, we believe the best cakes feel personal. Whether you're celebrating someone special or simply making an ordinary day sweeter, the details matter.</p><p>Our designs draw on romantic piping, delicate florals, joyful colours and plenty of personality. Tell us what you're dreaming of, and we'll start the conversation.</p><a class="text-link" href="#enquire">Tell us your idea <span>↗</span></a></div></div><div class="story-photo-row"><figure><img src="assets/golden-day.jpg" alt="Golden yellow cake decorated with daisy blossoms" loading="lazy"/><figcaption>THE LITTLE DETAILS</figcaption></figure><figure><img src="assets/cherry-mocha.jpg" alt="Chocolate cake adorned with red cherries and pink piped bows" loading="lazy"/><figcaption>A PERSONAL TOUCH</figcaption></figure><figure><img src="assets/sun-kissed.jpg" alt="Orange and cream cake with marigold-style decorations" loading="lazy"/><figcaption>MADE TO CELEBRATE</figcaption></figure></div></section>
     <section class="menu section-pad" id="menu"><div class="wrap menu-grid"><div class="menu-intro reveal"><div class="eyebrow">03 / FIND YOUR FLAVOUR</div><h2>Good looks.<br/><em>Great taste.</em></h2><p>Choose a flavour to begin. Our list includes everyday favourites, chocolate indulgences and a few delightful twists.</p><div class="menu-aside">Prices shown in INR, transcribed from the supplied bakery menu. Please confirm serving size, customization costs and availability before ordering.</div></div><div class="menu-board reveal"><div class="menu-switch"><button data-menu="cream" class="selected" aria-pressed="true">Cream cakes</button><button data-menu="dry" aria-pressed="false">Dry cakes</button></div><div id="menu-list" class="menu-list"></div><p class="menu-footnote">Atta and gluten-free options may be available. Ask us for details.</p></div></div></section>
+    
+    <section class="studio section-pad" id="cake-studio" aria-labelledby="studio-title">
+      <div class="wrap studio-grid">
+
+        <div class="studio-intro">
+          <span class="eyebrow">05 / YOUR CAKE, YOUR WAY</span>
+          <h2 id="studio-title">
+            Let's make it<br><em>personal.</em>
+          </h2>
+          <p>
+            A few choices are all we need to start a conversation.
+            Pick your inspiration, then send your request directly to Anjali.
+          </p>
+
+          <div class="studio-image">
+            <img
+              src="assets/peach-bloom.jpg"
+              id="studio-inspiration"
+              alt="Peach Bloom inspiration cake"
+              loading="lazy"
+            >
+            <span class="studio-image-caption">
+              <span>DESIGN INSPIRATION</span>
+              <strong id="studio-image-name">Vintage florals</strong>
+            </span>
+          </div>
+
+          <p class="studio-disclaimer">
+            Images are inspiration, not generated previews or guarantees
+            of an exact design.
+          </p>
+        </div>
+
+        <div class="studio-panel">
+          <div class="studio-topline">
+            <span id="studio-step-indicator">01 / 03</span>
+            <span>THE CAKE CONSULTATION</span>
+          </div>
+
+          <div class="studio-progress" aria-hidden="true">
+            <span id="studio-progress-bar"></span>
+          </div>
+
+          <form id="studio-form" novalidate>
+
+            <!-- STEP 1: OCCASION -->
+            <fieldset class="studio-step is-current" data-studio-step="0">
+              <legend>What's the occasion?</legend>
+              <p>Every celebration has a different feeling.</p>
+
+              <div class="studio-choice-grid">
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Birthday" checked>
+                  <span>Birthday</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Anniversary">
+                  <span>Anniversary</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Wedding / Engagement">
+                  <span>Wedding / Engagement</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Just because">
+                  <span>Just because</span>
+                </label>
+                <label class="studio-chip">
+                  <input type="radio" name="studio-occasion" value="Other celebration">
+                  <span>Something else</span>
+                </label>
+              </div>
+
+              <div class="studio-fields-two">
+                <label class="studio-field">
+                  Date needed <small>(optional)</small>
+                  <input type="date" name="studio-date" id="studio-date">
+                </label>
+
+                <label class="studio-field">
+                  Guests <small>(estimate)</small>
+                  <select name="studio-guests">
+                    <option value="Not sure yet">Not sure yet</option>
+                    <option>Up to 6</option>
+                    <option>7–12</option>
+                    <option>13–20</option>
+                    <option>More than 20</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- STEP 2: DESIGN DIRECTION -->
+            <fieldset class="studio-step" data-studio-step="1" hidden>
+              <legend>What feels like you?</legend>
+              <p>
+                Choose a visual direction. We'll use it as a starting
+                point, not a fixed template.
+              </p>
+
+              <div class="studio-style-grid">
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Vintage florals"
+                    data-preview="assets/peach-bloom.jpg"
+                    checked
+                  >
+                  <span>
+                    <img src="assets/peach-bloom.jpg" alt="" loading="lazy">
+                    <b>Vintage florals</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Romantic ribbons"
+                    data-preview="assets/be-mine.jpg"
+                  >
+                  <span>
+                    <img src="assets/be-mine.jpg" alt="" loading="lazy">
+                    <b>Romantic ribbons</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Rich chocolate"
+                    data-preview="assets/cherry-mocha.jpg"
+                  >
+                  <span>
+                    <img src="assets/cherry-mocha.jpg" alt="" loading="lazy">
+                    <b>Rich chocolate</b>
+                  </span>
+                </label>
+
+                <label class="studio-style">
+                  <input
+                    type="radio"
+                    name="studio-design"
+                    value="Colourful & playful"
+                    data-preview="assets/sun-kissed.jpg"
+                  >
+                  <span>
+                    <img src="assets/sun-kissed.jpg" alt="" loading="lazy">
+                    <b>Colourful & playful</b>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- STEP 3: FINISHING TOUCHES -->
+            <fieldset class="studio-step" data-studio-step="2" hidden>
+              <legend>One final touch.</legend>
+              <p>
+                Tell us the flavour you have in mind and any details
+                that matter.
+              </p>
+
+              <label class="studio-field">
+                Flavour inspiration
+                <select name="studio-flavour">
+                  <option value="I'd love a recommendation">
+                    I'd love a recommendation
+                  </option>
+                  <optgroup label="Cream cakes">
+                    <option>Pineapple Crush</option>
+                    <option>Pineacle’o’ Pine</option>
+                    <option>Chococia Heaven</option>
+                    <option>Dark Snow</option>
+                    <option>Kitkat Drum</option>
+                    <option>Oreo Magic</option>
+                    <option>Dusky Mud</option>
+                    <option>Red Velvet</option>
+                    <option>Blue Berry</option>
+                    <option>Love 2 Cappucino</option>
+                    <option>Fruity Love</option>
+                    <option>Day Night Choco</option>
+                  </optgroup>
+                  <optgroup label="Dry cakes">
+                    <option>Vanilla</option>
+                    <option>Chocolate</option>
+                    <option>Choco Chip</option>
+                    <option>Marble</option>
+                    <option>Carrot</option>
+                    <option>Orange</option>
+                    <option>Dry Fruit</option>
+                    <option>Dates and Walnut</option>
+                  </optgroup>
+                </select>
+              </label>
+
+              <label class="studio-field">
+                Your name <small>(required)</small>
+                <input
+                  name="studio-name"
+                  type="text"
+                  placeholder="Your name"
+                  maxlength="80"
+                  autocomplete="name"
+                  required
+                >
+              </label>
+
+              <label class="studio-field">
+                A note for Anjali <small>(optional)</small>
+                <textarea
+                  name="studio-notes"
+                  rows="3"
+                  maxlength="900"
+                  placeholder="Colours, message on the cake, allergies to discuss, or anything else…"
+                ></textarea>
+              </label>
+
+              <div
+                class="studio-summary"
+                id="studio-summary"
+                aria-live="polite"
+              ></div>
+            </fieldset>
+
+            <div class="studio-actions">
+              <button
+                type="button"
+                class="studio-back"
+                id="studio-back"
+                hidden
+              >← Back</button>
+
+              <button
+                type="button"
+                class="studio-next"
+                id="studio-next"
+              >
+                Continue <span aria-hidden="true">↗</span>
+              </button>
+
+              <button
+                type="submit"
+                class="studio-next"
+                id="studio-send"
+                hidden
+              >
+                Continue on WhatsApp
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+
+            <p class="studio-footnote">
+              No payment or order is placed here. Your enquiry opens
+              as a pre-filled WhatsApp message for you to review and send.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <section class="contact section-pad" id="enquire"><div class="wrap contact-layout"><div class="reveal"><div class="eyebrow">04 / LET'S MAKE SOMETHING SPECIAL</div><h2>Your moment.<br/><em>Our next creation.</em></h2><p>Have an occasion in mind? Tell us a little about your cake and we'll help get the conversation started.</p><a class="contact-number" href="tel:+918437993098">+91 84379 93098 <span>↗</span></a></div><form class="enquiry-form reveal" id="enquiry-form"><label for="name">YOUR NAME</label><input id="name" name="name" type="text" autocomplete="name" placeholder="What should we call you?" required maxlength="80"/><label for="occasion">THE OCCASION</label><select id="occasion" name="occasion" required><option value="" disabled selected>What are we celebrating?</option><option>Birthday</option><option>Anniversary</option><option>Wedding / Engagement</option><option>Just because</option><option>Something else</option></select><label for="cake">A LITTLE ABOUT YOUR CAKE</label><textarea id="cake" name="cake" rows="3" placeholder="A favourite design, flavour, date, or anything else…" required maxlength="1500"></textarea><button class="pill pill-dark" type="submit">Continue on WhatsApp <span>↗</span></button><p class="form-note">Opens WhatsApp with your enquiry pre-filled. Nothing is submitted or stored on this website.</p></form></div></section>
   </main>
   <footer class="footer"><div class="wrap footer-top"><div><a href="#top" class="footer-logo">bakeology<span>.</span></a><div class="footer-tag">BY ANJALI · MADE FOR THE MOMENT</div></div><div class="footer-links"><a href="#collection">Collection</a><a href="#menu">Menu</a><a href="#enquire">Enquire</a></div></div><div class="wrap footer-bottom"><span>© <span id="year"></span> BAKEOLOGY BY ANJALI</span><span>THOUGHTFULLY BAKED. BEAUTIFULLY YOURS.</span><a href="#top">BACK TO TOP ↑</a></div></footer>
