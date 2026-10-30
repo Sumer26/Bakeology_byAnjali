@@ -1,6 +1,7 @@
 import { whatsapp } from './config.js';
-
+import { initialiseCakePicker } from './enquiry-cakes.js';
 const form = document.getElementById('studio-form');
+const cakePicker = initialiseCakePicker(form);
 
 const steps = [
   ...form.querySelectorAll('[data-studio-step]')
@@ -32,10 +33,14 @@ function updateSummary() {
 
   const guestText = guests === 'Not sure yet'
     ? 'Guest count to confirm'
-    : guests + ' guests';
+    : `${guests} guests`;
 
-  document.getElementById('studio-summary').textContent =
-    `${selected('studio-occasion')} · ${selected('studio-design')} · ${guestText} · ${field('studio-flavour').value}`;
+  document.getElementById('studio-summary').textContent = [
+    selected('studio-occasion'),
+    cakePicker.summary(),
+    guestText,
+    field('studio-flavour').value
+  ].join(' · ');
 }
 
 function show(index, focus = false) {
@@ -79,6 +84,10 @@ function validateStep(index) {
   ];
 
   for (const input of inputs) {
+    if (index === 1 && !cakePicker.validate()) {
+    show(index);
+    return false;
+  }
     if (input.required && input.type === 'text') {
       input.setCustomValidity(
         input.value.trim()
@@ -149,7 +158,7 @@ form.addEventListener('submit', event => {
     `Occasion: ${selected('studio-occasion')}`,
     `Date: ${date.value || 'To be confirmed'}`,
     `Guests: ${field('studio-guests').value}`,
-    `Inspiration: ${selected('studio-design')}`,
+    `Cake choice: ${cakePicker.summary()}`,
     `Flavour: ${field('studio-flavour').value}`,
     `Notes: ${field('studio-notes').value.trim() || 'None yet'}`,
     'Please confirm availability, suitable sizes and a quotation.'
