@@ -1,0 +1,105 @@
+.cake-customizer .art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(340px, 54vw, 640px);
+  min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    #faf6ee 0%,
+    #eee7dc 75%
+  );
+}
+
+.cake-customizer .art canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.cake-customizer .art canvas:active {
+  cursor: grabbing;
+}
+
+.cake-customizer .art[data-mode="decorate"] canvas {
+  cursor: crosshair;
+}
+
+.cake-customizer .studio-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 18px 0 12px;
+  border-top: 1px solid #cdbfaf;
+}
+
+.cake-customizer .studio-tools button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid #cdbfaf;
+  border-radius: 4px;
+  background: transparent;
+  color: #493b31;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cake-customizer .studio-tools button[aria-pressed="true"] {
+  background: #493b31;
+  border-color: #493b31;
+  color: #fff8ee;
+}
+
+.cake-customizer .studio-tools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cake-customizer .studio-tools .studio-finish {
+  margin-left: auto;
+  background: #493b31;
+  color: #fff8ee;
+}
+
+.cake-customizer .studio-hint {
+  min-height: 42px;
+  margin: 0;
+  color: #796b60;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.cake-customizer .studio-tools button:focus-visible {
+  outline: 2px solid #a66651;
+  outline-offset: 4px;
+}
+
+@media (max-width: 850px) {
+  .cake-customizer .art {
+    height: 360px;
+  }
+
+  .cake-customizer .preview {
+    position: relative;
+    top: auto;
+  }
+
+  .cake-customizer .studio-tools .studio-finish {
+    margin-left: 0;
+  }
+
+  .cake-customizer .controls :is(button, input, a) {
+    scroll-margin-top: 100px;
+  }
+}
+
+@media (max-width: 420px) {
+  .cake-customizer .art {
+    height: 310px;
+  }
+}
