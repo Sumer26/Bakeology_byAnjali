@@ -1,18 +1,21 @@
-/* Homepage hero photography */
+.hero {
+  overflow: clip;
+}
+
 .hero-visual.has-parallax {
   position: relative;
   overflow: hidden;
   isolation: isolate;
 }
 
-/* Preserve the original image's layout and accessible description. */
 .hero-visual.has-parallax > img {
   opacity: 0;
 }
 
+/* Extra image coverage allows much larger movement. */
 .hero-parallax-layer {
   position: absolute;
-  inset: -18% 0;
+  inset: -35% -10%;
   z-index: 0;
   pointer-events: none;
   transform-origin: center;
@@ -29,12 +32,24 @@
   transform: none;
 }
 
-/* Keep the photograph caption above the moving image. */
 .hero-visual.has-parallax .hero-visual-caption {
   z-index: 2;
 }
 
+/* Individual text elements move at different speeds. */
+.hero.has-scroll-motion .hero-copy > * {
+  translate: 0 var(--hero-copy-offset, 0px);
+}
+
+.hero.has-scroll-motion .hero-copy > h1 {
+  translate: 0 var(--hero-title-offset, 0px);
+}
+
 @media (max-width: 760px) {
+  .hero-parallax-layer {
+    inset: -30% -8%;
+  }
+
   .hero-parallax-layer > img {
     object-position: center 40%;
   }
@@ -47,5 +62,9 @@
 
   .hero-parallax-layer {
     display: none;
+  }
+
+  .hero.has-scroll-motion .hero-copy > * {
+    translate: none;
   }
 }

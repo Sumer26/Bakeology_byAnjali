@@ -1,11 +1,12 @@
 const visual = document.querySelector('.hero-visual');
 const original = visual?.querySelector(':scope > img');
+const hero = visual?.closest('.hero');
 
-if (visual && original) {
-  initialiseHeroMotion(visual, original);
+if (hero && visual && original) {
+  initialiseHeroMotion(hero, visual, original);
 }
 
-function initialiseHeroMotion(visual, original) {
+function initialiseHeroMotion(hero, visual, original) {
   if (visual.querySelector('.hero-parallax-layer')) return;
 
   const reducedMotion = matchMedia(
@@ -30,49 +31,101 @@ function initialiseHeroMotion(visual, original) {
   visual.prepend(layer);
 
   let frame = 0;
-  let inView = true;
   let ready = false;
+  let visible = true;
+
+  const clamp = (value, min, max) =>
+    Math.max(min, Math.min(max, value));
 
   function update() {
     frame = 0;
 
-    if (!ready || reducedMotion.matches || !inView) return;
+    if (!ready || reducedMotion.matches || !visible) return;
 
-    const rect = visual.getBoundingClientRect();
-    const height = Math.max(rect.height, 1);
+    const imageRect = visual.getBoundingClientRect();
+    const heroRect = hero.getBoundingClientRect();
 
-    // Negative before the image reaches the top; positive afterward.
-    const progress = Math.max(
+    const imageHeight = Math.max(imageRect.height, 1);
+    const heroHeight = Math.max(heroRect.height, 1);
+
+    /*
+     * Entrance: -1 to 0
+     * Exit:      0 to 1
+     *
+     * The photograph moves down inside its frame as the
+     * frame scrolls upward, creating visible depth.
+     */
+    const imageProgress = clamp(
+      -imageRect.top / imageHeight,
       -1,
-      Math.min(1, -rect.top / height)
+      1
     );
 
-    const strength = mobile.matches ? 0.055 : 0.12;
-    const shift = progress * height * strength;
+    const exitProgress = clamp(imageProgress, 0, 1);
+    const entranceProgress = clamp(-imageProgress, 0, 1);
 
-    // A restrained zoom that settles as the photograph scrolls away.
-    const exitProgress = Math.max(0, progress);
-    const scale = 1.055 - exitProgress * 0.035;
+    const movement = mobile.matches ? 0.23 : 0.32;
 
-    layer.style.transform =
-      `translate3d(0, ${shift.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+    const imageY = imageProgress * imageHeight * movement;
+
+    // Stronger opening crop, gradually revealing more of the photo.
+    const scale =
+      1.16 -
+      exitProgress * 0.15 +
+      entranceProgress * 0.035;
+
+    // Small lateral movement adds depth without tilting the cake.
+    const imageX = mobile.matches ? 0 : exitProgress * -24;
+
+    layer.style.transform = [
+      `translate3d(${imageX.toFixed(2)}px, ${imageY.toFixed(2)}px, 0)`,
+      `scale(${scale.toFixed(4)})`
+    ].join(' ');
+
+    const heroProgress = clamp(
+      -heroRect.top / heroHeight,
+      0,
+      1
+    );
+
+    // Keep mobile text still: its photo sits beneath the copy.
+    const titleOffset = mobile.matches
+      ? 0
+      : heroProgress * 100;
+
+    const copyOffset = mobile.matches
+      ? 0
+      : heroProgress * 45;
+
+    hero.style.setProperty(
+      '--hero-title-offset',
+      `${titleOffset.toFixed(2)}px`
+    );
+
+    hero.style.setProperty(
+      '--hero-copy-offset',
+      `${copyOffset.toFixed(2)}px`
+    );
   }
 
   function schedule() {
-    if (frame || reducedMotion.matches || !inView || !ready) return;
+    if (frame || !ready || !visible || reducedMotion.matches) return;
     frame = requestAnimationFrame(update);
   }
 
   function applyPreference() {
-    visual.classList.toggle(
-      'has-parallax',
-      ready && !reducedMotion.matches
-    );
+    const enabled = ready && !reducedMotion.matches;
 
-    if (reducedMotion.matches) {
+    visual.classList.toggle('has-parallax', enabled);
+    hero.classList.toggle('has-scroll-motion', enabled);
+
+    if (!enabled) {
       cancelAnimationFrame(frame);
       frame = 0;
+
       layer.style.transform = '';
+      hero.style.removeProperty('--hero-title-offset');
+      hero.style.removeProperty('--hero-copy-offset');
     } else {
       schedule();
     }
@@ -89,21 +142,21 @@ function initialiseHeroMotion(visual, original) {
 
   photograph.addEventListener('error', () => {
     ready = false;
-    visual.classList.remove('has-parallax');
+    applyPreference();
     layer.remove();
   }, { once: true });
 
   if (photograph.complete) activate();
 
   const observer = new IntersectionObserver(entries => {
-    inView = entries[0].isIntersecting;
+    visible = entries[0].isIntersecting;
 
-    if (inView) schedule();
+    if (visible) schedule();
   }, {
-    rootMargin: '100px'
+    rootMargin: '150px'
   });
 
-  observer.observe(visual);
+  observer.observe(hero);
 
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule, { passive: true });
