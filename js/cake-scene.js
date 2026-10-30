@@ -621,6 +621,70 @@ function distanceToEdge(point, shape) {
 
   return closest;
 }
+function tierInfo(tier) {
+  const lowerHeight = state.tiers === 'Two' ? 0.82 : 1.05;
+
+  return tier === 1 && state.tiers === 'Two'
+    ? { radius: 1.02, base: 0.07 + lowerHeight, height: 0.78 }
+    : { radius: 1.5, base: 0.07, height: lowerHeight };
+}
+
+function placementWorld(item) {
+  // Older saved decorations belong to the uppermost tier.
+  const tier = item.tier ?? (state.tiers === 'Two' ? 1 : 0);
+  const info = tierInfo(tier);
+  const side = item.surface === 'side';
+
+  const normal = side
+    ? new THREE.Vector3(item.nx, 0, item.nz).normalize()
+    : new THREE.Vector3(0, 1, 0);
+
+  const point = new THREE.Vector3(
+    item.x * info.radius,
+    side
+      ? info.base + item.y * info.height
+      : info.base + info.height + 0.045,
+    item.z * info.radius
+  );
+
+  if (side) point.addScaledVector(normal, 0.012);
+
+  return { point, normal };
+}
+
+function decorationRadius(type) {
+  return {
+    Cherries: 0.11,
+    Candles: 0.05,
+    Pearls: 0.045,
+    Sprinkles: 0.075
+  }[type] || 0.08;
+}
+
+function distanceToEdge(point, shape) {
+  const points = shape.getPoints(80);
+  let closest = Infinity;
+
+  const p = new THREE.Vector2(point.x, -point.z);
+
+  for (let i = 0; i < points.length; i++) {
+    const a = points[i];
+    const b = points[(i + 1) % points.length];
+    const ab = b.clone().sub(a);
+    const denominator = ab.lengthSq();
+
+    const t = denominator
+      ? THREE.MathUtils.clamp(p.clone().sub(a).dot(ab) / denominator, 0, 1)
+      : 0;
+
+    closest = Math.min(
+      closest,
+      p.distanceTo(a.clone().addScaledVector(ab, t))
+    );
+  }
+
+  return closest;
+}
 
 function hitSurface(event, type, ignoreIndex) {
   setRay(event);
@@ -839,83 +903,6 @@ renderer.domElement.addEventListener('pointercancel', () => {
   pointerStart = null;
   rebuildDecorations();
 });
-
-  renderer.domElement.addEventListener('pointerdown', event => {
-    if (mode !== 'decorate' || transition || !event.isPrimary) return;
-
-    setRay(event);
-
-    const hit = raycaster.intersectObjects(decorations.children, true)[0];
-    let object = hit?.object;
-
-    while (object && object.parent !== decorations) {
-      object = object.parent;
-    }
-
-    pointerStart = {
-      id: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-      index: object?.userData.index,
-      point: null
-    };
-
-    renderer.domElement.setPointerCapture(event.pointerId);
-  });
-
-  renderer.domElement.addEventListener('pointermove', event => {
-    if (!pointerStart || pointerStart.id !== event.pointerId) return;
-    if (pointerStart.index === undefined) return;
-
-    const point = hitSurface(event);
-    if (!point) return;
-
-    pointerStart.point = point;
-
-    const decoration = decorations.children[pointerStart.index];
-    decoration.position.x = point.x;
-    decoration.position.z = point.z;
-  });
-
-  renderer.domElement.addEventListener('pointerup', event => {
-    if (!pointerStart || pointerStart.id !== event.pointerId) return;
-
-    const start = pointerStart;
-    pointerStart = null;
-
-    if (renderer.domElement.hasPointerCapture(event.pointerId)) {
-      renderer.domElement.releasePointerCapture(event.pointerId);
-    }
-
-    if (start.index !== undefined && start.point) {
-      onMove(
-        start.index,
-        start.point.x / topRadius,
-        start.point.z / topRadius
-      );
-      return;
-    }
-
-    if (start.index !== undefined) return;
-
-    const moved = Math.hypot(
-      event.clientX - start.x,
-      event.clientY - start.y
-    );
-
-    if (moved > 10) return;
-
-    const point = hitSurface(event);
-
-    if (point) {
-      onPlace(point.x / topRadius, point.z / topRadius);
-    }
-  });
-
-  renderer.domElement.addEventListener('pointercancel', () => {
-    pointerStart = null;
-    if (state) rebuildDecorations();
-  });
 
   function resize() {
     const width = host.clientWidth;
