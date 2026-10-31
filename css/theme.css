@@ -827,3 +827,321 @@ html[data-theme="dark"] .filters button span {
     padding: 20px;
   }
 }
+
+/* =========================================================
+   AFTER-HOURS — ENQUIRY AND CONSULTATION
+   ========================================================= */
+
+/* Avoid affecting the cake designer's nested .studio element. */
+html[data-theme="dark"] .studio:has(.studio-grid),
+html[data-theme="dark"] .contact {
+  background: var(--theme-background);
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .studio-intro :is(h1, h2),
+html[data-theme="dark"] .contact :is(h1, h2) {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .studio-intro :is(h1, h2) em,
+html[data-theme="dark"] .contact :is(h1, h2) em {
+  color: var(--theme-rose);
+}
+
+html[data-theme="dark"]
+.studio-intro > p:not(.studio-disclaimer),
+html[data-theme="dark"] .studio-disclaimer,
+html[data-theme="dark"] .contact p {
+  color: var(--theme-muted);
+}
+
+/* The consultation panel */
+
+html[data-theme="dark"] .studio-panel {
+  background: var(--theme-section);
+  color: var(--theme-text);
+
+  border: 1px solid var(--theme-border);
+  border-top: 2px solid var(--theme-accent);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+}
+
+html[data-theme="dark"] .studio-topline {
+  color: var(--theme-accent);
+}
+
+html[data-theme="dark"] .studio-progress {
+  background: var(--theme-border);
+}
+
+html[data-theme="dark"] .studio-progress span {
+  background: var(--theme-accent);
+}
+
+html[data-theme="dark"] .studio-step legend {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .studio-step > p,
+html[data-theme="dark"] .studio-footnote {
+  color: var(--theme-muted);
+}
+
+/* Occasion choices */
+
+html[data-theme="dark"] .studio-chip span {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-color: var(--theme-control-border);
+}
+
+html[data-theme="dark"] .studio-chip input:checked + span {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+  border-color: var(--theme-action-background);
+}
+
+html[data-theme="dark"] .studio-chip input:focus-visible + span,
+html[data-theme="dark"] .studio-style input:focus-visible + span {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 3px;
+}
+
+html[data-theme="dark"] .studio-chip input:disabled + span {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Labels, dates, dropdowns and message fields */
+
+html[data-theme="dark"] .studio-field {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .studio-field small {
+  color: var(--theme-muted);
+}
+
+html[data-theme="dark"]
+.studio-field :is(input, select, textarea) {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-color: var(--theme-control-border);
+  color-scheme: dark;
+  caret-color: var(--theme-accent);
+
+  /* Keep mobile inputs comfortably readable. */
+  font-size: 16px;
+}
+
+html[data-theme="dark"]
+.studio-field :is(input, textarea)::placeholder {
+  color: #b7a593;
+  opacity: 1;
+}
+
+html[data-theme="dark"] .studio-field select option {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"]
+.studio-field :is(input, select, textarea):focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 3px;
+}
+
+html[data-theme="dark"]
+.studio-field :is(input, select, textarea):user-invalid,
+html[data-theme="dark"]
+.studio-field :is(input, select, textarea)[aria-invalid="true"] {
+  border-color: #efa49a;
+}
+
+html[data-theme="dark"]
+.studio-field :is(input, select, textarea):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Cake inspiration cards — photographs remain unchanged. */
+
+html[data-theme="dark"] .studio-style > span {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-color: var(--theme-border);
+}
+
+html[data-theme="dark"] .studio-style b {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .studio-style input:checked + span {
+  background: var(--theme-raised);
+  border-color: var(--theme-accent);
+}
+
+/* Review summary */
+
+html[data-theme="dark"] .studio-summary {
+  background: var(--theme-surface);
+  color: var(--theme-muted);
+  border-color: var(--theme-border);
+}
+
+html[data-theme="dark"] .studio-summary strong {
+  color: var(--theme-text);
+}
+
+/* Form navigation */
+
+html[data-theme="dark"] .studio-back {
+  color: var(--theme-muted);
+}
+
+html[data-theme="dark"] .studio-next {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+}
+
+html[data-theme="dark"] .studio-next:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+html[data-theme="dark"]
+.studio-actions button:focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 4px;
+}
+
+/* Older contact form, if still used */
+
+html[data-theme="dark"] .contact-number {
+  color: var(--theme-text);
+  border-color: var(--theme-control-border);
+}
+
+html[data-theme="dark"] .enquiry-form label {
+  color: var(--theme-muted);
+}
+
+html[data-theme="dark"]
+.enquiry-form :is(input, textarea, select) {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border-color: var(--theme-control-border);
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .enquiry-form select option {
+  background: var(--theme-surface);
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"]
+.enquiry-form :is(input, textarea)::placeholder {
+  color: #b7a593;
+}
+
+html[data-theme="dark"]
+.enquiry-form :is(input, textarea, select):focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 3px;
+}
+
+html[data-theme="dark"] .enquiry-form button {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+}
+
+@media (hover: hover) {
+  html[data-theme="dark"]
+  .studio-chip:hover input:not(:checked):not(:disabled) + span {
+    background: var(--theme-raised);
+    border-color: var(--theme-accent);
+  }
+
+  html[data-theme="dark"]
+  .studio-style:hover > span {
+    border-color: var(--theme-accent);
+  }
+
+  html[data-theme="dark"] .studio-back:hover {
+    color: var(--theme-accent);
+  }
+
+  html[data-theme="dark"] .studio-next:not(:disabled):hover {
+    background: #f1d5b4;
+    color: var(--theme-action-text);
+  }
+}
+
+/* =========================================================
+   AFTER-HOURS — HOME ATELIER
+   ========================================================= */
+
+html[data-theme="dark"] .atelier {
+  background: var(--theme-section);
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .atelier-heading h2,
+html[data-theme="dark"] .atelier-chapter h3 {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .atelier-heading h2 em,
+html[data-theme="dark"] .atelier-chapter h3 em {
+  color: var(--theme-rose);
+}
+
+html[data-theme="dark"] .atelier-heading p,
+html[data-theme="dark"] .atelier-chapter p {
+  color: var(--theme-muted);
+}
+
+html[data-theme="dark"] .atelier .eyebrow,
+html[data-theme="dark"] .atelier-chapter-num {
+  color: var(--theme-accent);
+}
+
+html[data-theme="dark"] .atelier-chapter {
+  border-color: var(--theme-border);
+}
+
+html[data-theme="dark"] .atelier-frame {
+  background: #130f0d;
+  border-color: var(--theme-border);
+}
+
+/* Captions sit over photography, so retain their light colour. */
+html[data-theme="dark"] .atelier-image-footer {
+  color: #fff8ee;
+}
+
+html[data-theme="dark"] .atelier-meter {
+  background: var(--theme-border);
+}
+
+html[data-theme="dark"] #atelier-meter-fill {
+  background: var(--theme-accent);
+}
+
+html[data-theme="dark"] .atelier-chapter-link {
+  color: var(--theme-text);
+  border-color: var(--theme-control-border);
+}
+
+html[data-theme="dark"] .atelier-chapter-link:hover {
+  color: var(--theme-accent);
+  border-color: var(--theme-accent);
+}
+
+html[data-theme="dark"] .atelier-chapter-link:focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 5px;
+}
