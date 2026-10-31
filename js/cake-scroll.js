@@ -2,14 +2,16 @@
   "use strict";
 
   function mountCakeScroll() {
-    const hero = document.querySelector(".hero");
+    const host = document.getElementById("cake-scroll-story");
 
-    if (!hero || document.getElementById("cake-scroll-story")) return;
+        if (!host) {
+        console.error(
+            'Cake assembly: add <section id="cake-scroll-story"></section> after the homepage hero.'
+        );
+        return;
+        }
 
-    const host = document.createElement("section");
-    host.id = "cake-scroll-story";
-    host.setAttribute("aria-label", "A cake, made layer by layer");
-    hero.after(host);
+        if (host.shadowRoot) return;
 
     // Keep this section's styles separate from your existing website.
     const root = host.attachShadow({ mode: "open" });
@@ -338,7 +340,7 @@
             Scroll to see it come together.
           </p>
 
-          <a class="skip" href="#collection">Explore the collection ↗</a>
+          <a class="skip" href="cakes.html">Explore the collection ↗</a>
         </div>
 
         <div class="art">
@@ -483,24 +485,6 @@
     }
 
     // Ensure this link reaches the existing page outside the shadow root.
-    root.querySelector(".skip").addEventListener("click", event => {
-      const collection = document.querySelector("#collection");
-      if (!collection) return;
-
-      event.preventDefault();
-      collection.scrollIntoView({ behavior: "instant", block: "start" });
-
-      // Transfer keyboard focus along with the scroll.
-      const previousTabindex = collection.getAttribute("tabindex");
-      if (previousTabindex === null) collection.setAttribute("tabindex", "-1");
-      collection.focus({ preventScroll: true });
-
-      if (previousTabindex === null) {
-        collection.addEventListener("blur", () => {
-          collection.removeAttribute("tabindex");
-        }, { once: true });
-      }
-    });
 
     window.addEventListener("scroll", requestPaint, { passive: true });
     window.addEventListener("resize", requestPaint, { passive: true });
@@ -515,18 +499,43 @@
     syncMotionPreference();
 
     // Start animation only when every image is available.
-    Promise.all(images.map(image => image.decode()))
-      .then(() => {
-        ready = true;
-        syncMotionPreference();
-      })
-      .catch(error => {
-        console.error(
-          "Cake scroll: check that all four cake-stage PNGs exist in assets/.",
-          error
-        );
-        syncMotionPreference();
+    Promise.allSettled(images.map(image => image.decode()))
+  .then(results => {
+    const failed = results
+      .map((result, index) => (
+        result.status === "rejected"
+          ? images[index].getAttribute("src")
+          : null
+      ))
+      .filter(Boolean);
+
+    if (failed.length) {
+      ready = false;
+      syncMotionPreference();
+
+      const available = results.findLastIndex(
+        result => result.status === "fulfilled"
+      );
+
+      images.forEach((image, index) => {
+        image.style.clipPath = "";
+        image.style.visibility =
+          index === available ? "visible" : "hidden";
       });
+
+      label.textContent = "Cake images could not all be loaded.";
+
+      console.error(
+        "Cake assembly: missing or unreadable images:",
+        failed
+      );
+
+      return;
+    }
+
+    ready = true;
+    syncMotionPreference();
+  });
   }
 
   if (document.readyState === "loading") {
