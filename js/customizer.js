@@ -9,7 +9,7 @@ import {
   saveFlavour,
   savedFlavour,
   categoryLabel
-} from './data/flavours.js';
+} from './data/flavous.js';
 
 
 const root = document.querySelector('.cake-customizer');

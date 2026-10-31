@@ -108,3 +108,229 @@
     font-size: clamp(52px, 10vw, 70px);
   }
 }
+
+/* Interactive flavour rows */
+
+#menu-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+}
+
+#menu-list > button.flavour-choice {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto 32px;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 82px;
+  margin: 0;
+  padding: 20px 12px;
+
+  border: 0;
+  border-bottom: 1px solid #ded2c6;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: #352a24;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 250ms ease;
+}
+
+#menu-list .flavour-choice .menu-count {
+  min-width: 0;
+  color: #a38b79;
+  font: 400 10px/1.4 'DM Mono', monospace;
+}
+
+#menu-list .flavour-choice .menu-name {
+  min-width: 0;
+  color: inherit;
+  font: 400 clamp(25px, 2.2vw, 35px)/1.15
+    'Instrument Serif', Georgia, serif;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+  transition: transform 350ms cubic-bezier(.22, 1, .36, 1);
+}
+
+#menu-list .flavour-choice .menu-price {
+  color: #756357;
+  font: 500 13px/1.4 'DM Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+#menu-list .flavour-choice .flavour-choice__mark {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d7c6b7;
+  border-radius: 50%;
+  background: transparent;
+  color: #8b6b57;
+  font: 400 17px/1 'DM Sans', sans-serif;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease,
+    transform 350ms cubic-bezier(.22, 1, .36, 1);
+}
+
+#menu-list > .flavour-choice[aria-pressed="true"] {
+  background: #eee1d5;
+  border-bottom-color: #b88370;
+  color: #9b604f;
+}
+
+#menu-list .flavour-choice[aria-pressed="true"]
+.flavour-choice__mark {
+  background: #352a24;
+  border-color: #352a24;
+  color: #fff9ef;
+}
+
+/* Your chosen flavour */
+
+.flavour-selection {
+  box-sizing: border-box;
+  position: relative;
+  margin-top: 30px;
+  padding: clamp(24px, 3vw, 36px);
+  border: 1px solid #dac8b7;
+  background: #efe4d7;
+}
+
+.flavour-selection::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 26px;
+  width: 42px;
+  height: 2px;
+  background: #a86d5d;
+}
+
+.flavour-selection .flavour-selection__label {
+  margin: 0 0 14px;
+  color: #9b604f;
+  font: 400 10px/1.5 'DM Mono', monospace;
+  letter-spacing: .16em;
+}
+
+.flavour-selection .flavour-selection__name {
+  margin: 0;
+  color: #352a24;
+  font: 400 clamp(30px, 3vw, 42px)/1.1
+    'Instrument Serif', Georgia, serif;
+  letter-spacing: -.025em;
+}
+
+.flavour-selection .flavour-selection__note {
+  margin: 14px 0 0;
+  max-width: 44ch;
+  color: #79675a;
+  font: 400 12px/1.8 'DM Sans', sans-serif;
+}
+
+.flavour-selection .flavour-selection__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 48px;
+  max-width: 100%;
+  margin-top: 24px;
+  padding: 14px 20px;
+  border: 1px solid #352a24;
+  background: #352a24;
+  color: #fff9ef;
+  font: 400 12px/1.5 'DM Sans', sans-serif;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 250ms ease, transform 250ms ease;
+}
+
+.flavour-selection .flavour-selection__link[hidden] {
+  display: none;
+}
+
+#menu-list > .flavour-choice:focus-visible,
+.flavour-selection__link:focus-visible {
+  outline: 2px solid #a86d5d;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #menu-list > .flavour-choice:hover {
+    background: #f0e6dc;
+  }
+
+  #menu-list > .flavour-choice:hover .menu-name {
+    transform: translateX(4px);
+  }
+
+  #menu-list > .flavour-choice:hover .flavour-choice__mark {
+    transform: scale(1.08);
+  }
+
+  .flavour-selection .flavour-selection__link:hover {
+    background: #704b3b;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 600px) {
+  #menu-list > button.flavour-choice {
+    grid-template-columns: 18px minmax(0, 1fr) auto 28px;
+    gap: 8px;
+    min-height: 76px;
+    padding: 18px 4px;
+  }
+
+  #menu-list .flavour-choice .menu-name {
+    font-size: 25px;
+  }
+
+  #menu-list .flavour-choice .menu-price {
+    font-size: 12px;
+  }
+
+  #menu-list .flavour-choice .flavour-choice__mark {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+
+  .flavour-selection .flavour-selection__link {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #menu-list > button.flavour-choice,
+  #menu-list .flavour-choice .menu-name,
+  #menu-list .flavour-choice .flavour-choice__mark,
+  .flavour-selection .flavour-selection__link {
+    transition: none;
+  }
+
+  #menu-list > .flavour-choice:hover .menu-name,
+  #menu-list > .flavour-choice:hover .flavour-choice__mark,
+  .flavour-selection .flavour-selection__link:hover {
+    transform: none;
+  }
+}

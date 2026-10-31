@@ -1,5 +1,5 @@
 import { calculatePrice, PRICING } from './cake-pricing.js';
-import { findFlavour } from './data/flavours.js';
+import { findFlavour } from './data/flavous.js';
 
 let pdfLibrary;
 
