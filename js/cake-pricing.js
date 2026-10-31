@@ -105,19 +105,25 @@ export function createPricePanel(parent) {
     list.replaceChildren();
 
     price.lines.forEach(line => {
-      if (!line.amount) return;
 
       const row = document.createElement('div');
       const label = document.createElement('dt');
       const amount = document.createElement('dd');
 
       label.textContent = line.label;
-      amount.textContent = money.format(line.amount);
+      amount.textContent = line.amount === 0
+        ? 'Included'
+        : money.format(line.amount);
 
       row.append(label, amount);
       list.append(row);
     });
 
-    panel.querySelector('strong').textContent = money.format(price.total);
+    const total = panel.querySelector('strong');
+    const formattedTotal = money.format(price.total);
+
+    if (total.textContent !== formattedTotal) {
+    total.textContent = formattedTotal;
+    }
   };
 }

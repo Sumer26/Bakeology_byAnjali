@@ -38,15 +38,25 @@
 }
 
 .cake-customizer .studio-tools button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   min-height: 44px;
-  padding: 10px 15px;
+  padding: 11px 15px;
   border: 1px solid #cdbfaf;
-  border-radius: 4px;
-  background: transparent;
+  border-radius: 3px;
+  background: rgb(250 246 239 / 45%);
   color: #493b31;
-  font: inherit;
-  font-size: 12px;
+  font: 400 12px/1.4 'DM Sans', sans-serif;
+  text-align: center;
   cursor: pointer;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    transform 300ms cubic-bezier(.22, 1, .36, 1);
 }
 
 .cake-customizer .studio-tools button[aria-pressed="true"] {
@@ -61,8 +71,9 @@
 }
 
 .cake-customizer .studio-tools .studio-finish {
-  margin-left: auto;
+  margin-left: 0;
   background: #493b31;
+  border-color: #493b31;
   color: #fff8ee;
 }
 
@@ -165,4 +176,136 @@
   color: #796b60;
   font-size: 11px;
   line-height: 1.7;
+}
+
+/* Studio finishing details */
+
+.cake-customizer .studio-tools {
+  align-items: stretch;
+  gap: 8px;
+  padding: 18px 20px 14px 0;
+}
+
+.cake-customizer .studio-hint {
+  padding-right: 20px;
+  min-height: 44px;
+}
+
+.cake-customizer .cake-price {
+  position: relative;
+  margin-right: 20px;
+  padding: clamp(20px, 2.5vw, 30px);
+  border-color: #d7c6b4;
+  background: #faf6ee;
+}
+
+.cake-customizer .cake-price::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  width: 40px;
+  height: 2px;
+  background: #a76e5b;
+}
+
+.cake-customizer .cake-price__heading {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.cake-customizer .cake-price__lines > div {
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.cake-customizer .cake-price__lines dt {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #796b60;
+}
+
+.cake-customizer .cake-price__lines dd {
+  flex-shrink: 0;
+  color: #493b31;
+  font-variant-numeric: tabular-nums;
+}
+
+.cake-customizer .cake-price__total {
+  align-items: center;
+}
+
+.cake-customizer .cake-price__total strong {
+  font: 400 clamp(32px, 3vw, 42px)/1
+    'Instrument Serif', Georgia, serif;
+  letter-spacing: -.025em;
+}
+
+/* Keep tall preview stacks accessible on shorter laptops. */
+
+@media (min-width: 851px) and (max-height: 900px) {
+  .cake-customizer .preview {
+    position: static;
+  }
+
+  .cake-customizer .art {
+    height: clamp(340px, 48vh, 520px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cake-customizer .studio-tools button:not(:disabled):hover {
+    border-color: #a88770;
+    transform: translateY(-2px);
+  }
+
+  .cake-customizer .studio-tools button:not(
+    :disabled
+  ):not(
+    [aria-pressed="true"]
+  ):not(
+    .studio-finish
+  ):hover {
+    background: #faf2e6;
+  }
+
+  .cake-customizer .studio-tools .studio-finish:hover {
+    background: #70503c;
+  }
+}
+
+@media (max-width: 850px) {
+  .cake-customizer .preview {
+    position: static;
+  }
+
+  .cake-customizer .studio-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-right: 0;
+  }
+
+  .cake-customizer .studio-tools button {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .cake-customizer .studio-hint {
+    padding-right: 0;
+  }
+
+  .cake-customizer .cake-price {
+    margin-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cake-customizer .studio-tools button {
+    transition: none;
+  }
+
+  .cake-customizer .studio-tools button:not(:disabled):hover {
+    transform: none;
+  }
 }

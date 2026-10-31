@@ -1,5 +1,6 @@
 import { calculatePrice, PRICING } from './cake-pricing.js';
-import { findFlavour } from './data/flavous.js';
+import { findFlavour } from './data/flavours.js';
+import { colours, appearanceFields } from './config.js';
 
 let pdfLibrary;
 
@@ -150,19 +151,103 @@ export async function downloadDesignPDF({ state, preview }) {
 
   const flavour = findFlavour(state.flavour);
 
-  line(`${state.colour} / ${state.shape}`, 32);
-  line(`Tiers: ${state.tiers} · Finish: ${state.finish}`);
-  line(`Flavour: ${flavour?.name || 'To be confirmed'}`);
+  const appearance = state.appearance || {};
 
-  if (flavour) {
-    line(
-      `Menu reference: ₹${flavour.price}. Not added separately to this estimate.`,
-      19,
-      '#796b60'
-    );
+function validHex(value) {
+  return typeof value === 'string' &&
+    /^#[0-9a-f]{6}$/i.test(value);
+}
+
+function colourDescription(hex) {
+  const match = Object.entries(colours).find(
+    ([, value]) => value.toLowerCase() === hex.toLowerCase()
+  );
+
+  return match
+    ? `${match[0]} (${hex.toUpperCase()})`
+    : `Custom colour (${hex.toUpperCase()})`;
+}
+
+const icingHex = validHex(appearance.icingColour)
+  ? appearance.icingColour
+  : colours[state.colour] || colours.Ivory;
+
+const icingName = Object.entries(colours).find(
+  ([, value]) => value.toLowerCase() === icingHex.toLowerCase()
+)?.[0] || 'Custom colour';
+
+line(`${icingName} / ${state.shape}`, 32);
+line(`Tiers: ${state.tiers} · Finish: ${state.finish}`);
+line(`Flavour: ${flavour?.name || 'To be confirmed'}`);
+
+if (flavour) {
+  line(
+    `Menu reference: ₹${flavour.price}. Serving size requires confirmation. Not added separately to this estimate.`,
+    19,
+    '#796b60'
+  );
+}
+
+line(`Message: ${state.message || 'None'}`);
+
+y += 12;
+line('COLOUR DETAILS', 19, '#946752');
+
+line(`Icing: ${colourDescription(icingHex)}`, 21);
+
+const placedTypes = new Set(
+  (state.placements || []).map(item => item.type)
+);
+
+const activeColourFields = {
+  pipingColour: state.finish === 'Piping',
+  dripColour: state.finish.toLowerCase().includes('drip'),
+  messageColour: Boolean(state.message?.trim()),
+  cherryColour: placedTypes.has('Cherries'),
+  candleColour: placedTypes.has('Candles'),
+  pearlColour: placedTypes.has('Pearls'),
+  sprinkleColour: placedTypes.has('Sprinkles')
+};
+
+const defaultDripColours = {
+  'Chocolate drip': '#381c13',
+  'White chocolate drip': '#f3dfb6',
+  'Caramel drip': '#b66b2e'
+};
+
+const defaultColourValues = {
+  pipingColour: icingHex,
+  dripColour: defaultDripColours[state.finish] || '#381c13',
+  cherryColour: '#8f1223',
+  candleColour: '#fff0cf',
+  pearlColour: '#fff2db'
+};
+
+appearanceFields.forEach(({ key, label }) => {
+  if (key === 'icingColour' || !activeColourFields[key]) return;
+
+  let description;
+
+  if (validHex(appearance[key])) {
+    description = colourDescription(appearance[key]);
+  } else if (defaultColourValues[key]) {
+    description = colourDescription(defaultColourValues[key]);
+  } else {
+    description = key === 'messageColour'
+      ? 'Automatic contrast with the cake top'
+      : 'Mixed ivory, rose, green, lavender and cocoa';
   }
 
-  line(`Message: ${state.message || 'None'}`);
+  line(`${label}: ${description}`, 21);
+});
+
+line(
+  'Colours are visual references. Handmade icing shades may vary.',
+  18,
+  '#796b60'
+);
+
+y += 12;
 
   const decorations = new Map();
 
@@ -195,9 +280,13 @@ export async function downloadDesignPDF({ state, preview }) {
 
   const estimate = calculatePrice(state);
 
-  estimate.lines.filter(item => item.amount).forEach(item => {
-    line(`${item.label} — ₹${item.amount.toLocaleString('en-IN')}`, 21);
-  });
+  estimate.lines.forEach(item => {
+    const amount = item.amount === 0
+        ? 'Included'
+        : `₹${item.amount.toLocaleString('en-IN')}`;
+
+    line(`${item.label} — ${amount}`, 21);
+    });
 
   line(`Total: ₹${estimate.total.toLocaleString('en-IN')}`, 30);
 

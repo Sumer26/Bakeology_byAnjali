@@ -3,13 +3,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 
 
-export function createCakeScene(host, onPlace, onMove) {
-  const scene = new THREE.Scene();
-
-  const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true
-  });
+export function createCakeScene(
+  host,
+  onPlace,
+  onMove,
+  onReject = () => {}
+) {
 
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
   renderer.shadowMap.enabled = true;
@@ -64,6 +63,10 @@ export function createCakeScene(host, onPlace, onMove) {
     bumpScale: 0.018,
     clearcoat: 0.05
   });
+    // Separate material lets piping contrast with the cake icing.
+        const piping = icing.clone();
+        piping.roughness = 0.68;
+        piping.bumpScale = 0.012;
 
   const chocolate = new THREE.MeshPhysicalMaterial({
     color: '#381c13',
@@ -139,7 +142,53 @@ export function createCakeScene(host, onPlace, onMove) {
   let mode = 'rotate';
   let transition = null;
   let geometryKey = '';
-  let pointerStart = null;
+    let messageKey = '';
+    let decorationKey = '';
+    let pointerStart = null;
+
+    const defaultSprinkleColours = [
+    '#fff2d8',
+    '#cc7894',
+    '#b5bb8d',
+    '#cdb4d4',
+    '#7a4932'
+    ];
+
+    // Only accept full hexadecimal colours from saved/shared designs.
+    function validColour(value, fallback) {
+    return typeof value === 'string' &&
+        /^#[0-9a-f]{6}$/i.test(value)
+        ? value
+        : fallback;
+    }
+
+    function appearanceSettings() {
+    const value = state?.appearance;
+
+    return value && typeof value === 'object' &&
+        !Array.isArray(value)
+        ? value
+        : {};
+    }
+
+    function messageColour() {
+    const appearance = appearanceSettings();
+
+    // Default lettering contrasts with the actual visible cake top.
+    const topColour = state.finish.toLowerCase().includes('drip')
+        ? chocolate.color
+        : icing.color;
+
+    const brightness =
+        topColour.r * 0.2126 +
+        topColour.g * 0.7152 +
+        topColour.b * 0.0722;
+
+    return validColour(
+        appearance.messageColour,
+        brightness < 0.35 ? '#fff1ce' : '#653a2b'
+    );
+    }
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -227,8 +276,8 @@ export function createCakeScene(host, onPlace, onMove) {
     shape.getSpacedPoints(58).slice(0, -1).forEach(point => {
       const pip = mesh(
         new THREE.SphereGeometry(0.078, 16, 12),
-        icing
-      );
+        piping
+        );
 
       pip.position.set(
         point.x,
@@ -240,8 +289,8 @@ export function createCakeScene(host, onPlace, onMove) {
 
       const lower = mesh(
         new THREE.SphereGeometry(0.055, 12, 10),
-        icing
-      );
+        piping
+        );
 
       lower.position.set(point.x, base + 0.05, -point.y);
       lower.scale.y = 0.7;
@@ -362,10 +411,7 @@ export function createCakeScene(host, onPlace, onMove) {
     context.shadowBlur = 5;
     context.shadowOffsetY = 3;
 
-    context.fillStyle =
-      state.finish === 'Chocolate drip' || state.colour === 'Cocoa'
-        ? '#fff1ce'
-        : '#653a2b';
+    context.fillStyle = messageColour();
 
     context.fillText(state.message, 512, 192);
 
@@ -479,27 +525,95 @@ export function createCakeScene(host, onPlace, onMove) {
   }
 
   function update(nextState, colour) {
-    state = nextState;
-    icing.color.set(colour);
-    const dripColours = {
-        'Chocolate drip': '#381c13',
-        'White chocolate drip': '#f3dfb6',
-        'Caramel drip': '#b66b2e'
-        };
+  state = nextState;
 
-chocolate.color.set(dripColours[state.finish] || '#381c13');
-    const nextKey = [
-      state.shape, state.tiers, state.finish
-    ].join('|');
+  const appearance = appearanceSettings();
 
-    if (nextKey !== geometryKey) {
-      geometryKey = nextKey;
-      rebuildCake();
-    }
+  const icingColour = validColour(
+    appearance.icingColour,
+    validColour(colour, '#f1e2c8')
+  );
 
-    rebuildMessage();
-    rebuildDecorations();
+  const dripColours = {
+    'Chocolate drip': '#381c13',
+    'White chocolate drip': '#f3dfb6',
+    'Caramel drip': '#b66b2e'
+  };
+
+  icing.color.set(icingColour);
+
+  piping.color.set(
+    validColour(appearance.pipingColour, icingColour)
+  );
+
+  chocolate.color.set(
+    validColour(
+      appearance.dripColour,
+      dripColours[state.finish] || '#381c13'
+    )
+  );
+
+  cherryMaterial.color.set(
+    validColour(appearance.cherryColour, '#8f1223')
+  );
+
+  waxMaterial.color.set(
+    validColour(appearance.candleColour, '#fff0cf')
+  );
+
+  pearlMaterial.color.set(
+    validColour(appearance.pearlColour, '#fff2db')
+  );
+
+  // No custom colour means the original multicolour sprinkle mix.
+  const sprinkleColour = validColour(
+    appearance.sprinkleColour,
+    null
+  );
+
+  sprinkleMaterials.forEach((material, index) => {
+    material.color.set(
+      sprinkleColour || defaultSprinkleColours[index]
+    );
+  });
+
+  const nextGeometryKey = JSON.stringify([
+    state.shape,
+    state.tiers,
+    state.finish
+  ]);
+
+  const geometryChanged = nextGeometryKey !== geometryKey;
+
+  if (geometryChanged) {
+    rebuildCake();
+    geometryKey = nextGeometryKey;
   }
+
+  const nextMessageKey = JSON.stringify([
+    state.message,
+    topY,
+    topRadius,
+    messageColour()
+  ]);
+
+  if (geometryChanged || nextMessageKey !== messageKey) {
+    rebuildMessage();
+    messageKey = nextMessageKey;
+  }
+
+  const nextDecorationKey = JSON.stringify([
+    state.shape,
+    state.tiers,
+    state.finish,
+    state.placements || []
+  ]);
+
+  if (geometryChanged || nextDecorationKey !== decorationKey) {
+    rebuildDecorations();
+    decorationKey = nextDecorationKey;
+  }
+}
 
   function view(nextMode = 'rotate') {
   const sideView = nextMode === 'side';
@@ -558,70 +672,6 @@ chocolate.color.set(dripColours[state.finish] || '#381c13');
   }
 
   function tierInfo(tier) {
-  const lowerHeight = state.tiers === 'Two' ? 0.82 : 1.05;
-
-  return tier === 1 && state.tiers === 'Two'
-    ? { radius: 1.02, base: 0.07 + lowerHeight, height: 0.78 }
-    : { radius: 1.5, base: 0.07, height: lowerHeight };
-}
-
-function placementWorld(item) {
-  // Older saved decorations belong to the uppermost tier.
-  const tier = item.tier ?? (state.tiers === 'Two' ? 1 : 0);
-  const info = tierInfo(tier);
-  const side = item.surface === 'side';
-
-  const normal = side
-    ? new THREE.Vector3(item.nx, 0, item.nz).normalize()
-    : new THREE.Vector3(0, 1, 0);
-
-  const point = new THREE.Vector3(
-    item.x * info.radius,
-    side
-      ? info.base + item.y * info.height
-      : info.base + info.height + 0.045,
-    item.z * info.radius
-  );
-
-  if (side) point.addScaledVector(normal, 0.012);
-
-  return { point, normal };
-}
-
-function decorationRadius(type) {
-  return {
-    Cherries: 0.11,
-    Candles: 0.05,
-    Pearls: 0.045,
-    Sprinkles: 0.075
-  }[type] || 0.08;
-}
-
-function distanceToEdge(point, shape) {
-  const points = shape.getPoints(80);
-  let closest = Infinity;
-
-  const p = new THREE.Vector2(point.x, -point.z);
-
-  for (let i = 0; i < points.length; i++) {
-    const a = points[i];
-    const b = points[(i + 1) % points.length];
-    const ab = b.clone().sub(a);
-    const denominator = ab.lengthSq();
-
-    const t = denominator
-      ? THREE.MathUtils.clamp(p.clone().sub(a).dot(ab) / denominator, 0, 1)
-      : 0;
-
-    closest = Math.min(
-      closest,
-      p.distanceTo(a.clone().addScaledVector(ab, t))
-    );
-  }
-
-  return closest;
-}
-function tierInfo(tier) {
   const lowerHeight = state.tiers === 'Two' ? 0.82 : 1.05;
 
   return tier === 1 && state.tiers === 'Two'

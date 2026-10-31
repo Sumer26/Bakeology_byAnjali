@@ -1,16 +1,22 @@
-import { initial, choices, colours, whatsapp } from './config.js';
+import {
+  initial,
+  choices,
+  colours,
+  whatsapp,
+  appearanceFields,
+  defaultAppearance
+} from './config.js';
+
 import { createCakeScene } from './cake-scene.js';
 import { createPricePanel } from './cake-pricing.js';
 import { downloadDesignPDF } from './design-pdf.js';
+import { createAppearanceStudio } from './studio-appearance.js';
 
 import {
-  flavours,
   findFlavour,
   saveFlavour,
-  savedFlavour,
-  categoryLabel
-} from './data/flavous.js';
-
+  savedFlavour
+} from './data/flavours.js';
 
 const root = document.querySelector('.cake-customizer');
 const $ = selector => root.querySelector(selector);
@@ -21,22 +27,6 @@ const LEGACY_KEY = 'bakeology.design.v1';
 const TOPPINGS = ['Cherries', 'Candles', 'Sprinkles', 'Pearls'];
 const history = [];
 
-choices.finish = [
-  'Smooth',
-  'Piping',
-  'Chocolate drip',
-  'White chocolate drip',
-  'Caramel drip'
-];
-
-choices.topping = [
-  'None',
-  'Cherries',
-  'Candles',
-  'Sprinkles',
-  'Pearls'
-];
-
 let state = loadState();
 
 const requestedFlavour = findFlavour(
@@ -45,7 +35,11 @@ const requestedFlavour = findFlavour(
 
 if (requestedFlavour) {
   state.flavour = requestedFlavour.id;
-} else if (!state.flavour) {
+} else if (
+  !state.flavour &&
+  !new URLSearchParams(location.hash.slice(1)).has('design') &&
+  !new URLSearchParams(location.search).has('shape')
+) {
   state.flavour = savedFlavour()?.id || '';
 }
 
@@ -110,55 +104,42 @@ function addChoiceButtons(key) {
     button.dataset.key = key;
     button.dataset.value = value;
     button.setAttribute('aria-pressed', 'false');
-    button.textContent = value;
+    if (key === 'colour') {
+      const swatch = document.createElement('i');
+      swatch.style.setProperty('--swatch', colours[value]);
+      swatch.setAttribute('aria-hidden', 'true');
+
+      button.append(swatch, document.createTextNode(value));
+    } else {
+      button.textContent = value;
+    }
 
     container.append(button);
   });
 }
 
+addChoiceButtons('colour');
 addChoiceButtons('finish');
 addChoiceButtons('topping');
 
 const updatePrice = createPricePanel($('.preview'));
-const flavourSection = document.createElement('div');
-flavourSection.className = 'design-flavour';
 
-flavourSection.innerHTML = `
-  <label for="design-flavour">The flavour inside</label>
-  <select id="design-flavour">
-    <option value="">Choose a flavour…</option>
-  </select>
-  <p id="design-flavour-note">
-    Choose from the same menu shown on our Flavours page.
-  </p>
-`;
+const appearanceStudio = createAppearanceStudio(
+  $('.controls'),
+  () => state,
+  patch => {
+    snapshot();
 
-$('.controls').prepend(flavourSection);
-
-const flavourSelect = flavourSection.querySelector('select');
-const flavourNote = flavourSection.querySelector('p');
-
-const categories = [...new Set(flavours.map(item => item.category))];
-
-categories.forEach(category => {
-  const group = document.createElement('optgroup');
-  group.label = categoryLabel(category);
-
-  flavours
-    .filter(item => item.category === category)
-    .forEach(item => {
-      group.append(new Option(item.name, item.id));
+    state = validate({
+      ...state,
+      ...patch
     });
 
-  flavourSelect.append(group);
-});
+    if (state.flavour) saveFlavour(state.flavour);
 
-flavourSelect.addEventListener('change', () => {
-  snapshot();
-  state.flavour = flavourSelect.value;
-  saveFlavour(state.flavour);
-  render();
-});
+    render();
+  }
+);
 
 const pdfButton = document.createElement('button');
 pdfButton.type = 'button';
@@ -213,7 +194,12 @@ try {
 }
 
 function validate(value) {
-  const safe = { ...initial, placements: [] };
+  const safe = {
+  ...initial,
+  flavour: '',
+  appearance: { ...defaultAppearance },
+  placements: []
+};
 
   if (!value || typeof value !== 'object') return safe;
 
@@ -260,6 +246,22 @@ function validate(value) {
       nx: item.surface === 'side' ? item.nx : 0,
       nz: item.surface === 'side' ? item.nz : 0
     }));
+}
+  if (
+  value.appearance &&
+  typeof value.appearance === 'object' &&
+  !Array.isArray(value.appearance)
+) {
+  appearanceFields.forEach(({ key }) => {
+    const colour = value.appearance[key];
+
+    if (
+      typeof colour === 'string' &&
+      /^#[0-9a-f]{6}$/i.test(colour)
+    ) {
+      safe.appearance[key] = colour.toLowerCase();
+    }
+  });
 }
   safe.flavour = findFlavour(value.flavour)?.id || '';
   return safe;
@@ -312,13 +314,47 @@ function decorationSummary() {
       ).join(', ')
     : 'No placed toppings';
 }
+function icingDescription() {
+  const hex = state.appearance?.icingColour;
+
+  if (!hex) return state.colour;
+
+  const named = Object.entries(colours).find(
+    ([, value]) => value.toLowerCase() === hex.toLowerCase()
+  );
+
+  return named?.[0] || `Custom ${hex.toUpperCase()}`;
+}
+
+function appearanceSummary() {
+  const active = {
+    icingColour: true,
+    pipingColour: state.finish === 'Piping',
+    dripColour: state.finish.toLowerCase().includes('drip'),
+    messageColour: Boolean(state.message.trim()),
+    cherryColour: state.placements.some(item => item.type === 'Cherries'),
+    candleColour: state.placements.some(item => item.type === 'Candles'),
+    pearlColour: state.placements.some(item => item.type === 'Pearls'),
+    sprinkleColour: state.placements.some(item => item.type === 'Sprinkles')
+  };
+
+  const details = appearanceFields
+    .filter(({ key }) => active[key] && state.appearance?.[key])
+    .map(({ key, label }) =>
+      `${label}: ${state.appearance[key].toUpperCase()}`
+    );
+
+  return details.length
+    ? details.join('; ')
+    : 'Automatic colours';
+}
 
 function summary() {
   return [
     `${state.tiers === 'Two' ? 'Two-tier' : 'Single-tier'} ${
       state.shape.toLowerCase()
     } cake`,
-    `${state.colour.toLowerCase()} icing`,
+    `${icingDescription()} icing`,
     state.finish.toLowerCase(),
     decorationSummary()
   ].join(', ') + '.';
@@ -335,13 +371,7 @@ function designURL() {
 }
 
 function render() {
-  flavourSelect.value = state.flavour || '';
-
-const flavour = findFlavour(state.flavour);
-
-flavourNote.textContent = flavour
-  ? `${categoryLabel(flavour.category)} · Listed menu price ₹${flavour.price}. This is a menu reference, not an extra charge in the custom estimate.`
-  : 'Choose from the same menu shown on our Flavours page.';
+  appearanceStudio.update(state);
 
   updatePrice(state);
   scene?.update(state, colours[state.colour]);
@@ -358,13 +388,14 @@ flavourNote.textContent = flavour
   }
 
   $('#count').textContent = `${state.message.length} / 28`;
-  $('#design-name').textContent = `${state.colour} / ${state.shape}`;
-
+  $('#design-name').textContent =
+  `${icingDescription()} / ${state.shape}`;
   $('#enquire').href = whatsapp([
     "Hello Bakeology by Anjali! I'd like to enquire about this cake:",
     summary(),
     `Flavour: ${findFlavour(state.flavour)?.name || 'To be confirmed'}`,
     `Writing: ${state.message || 'None'}`,
+    `Colours: ${appearanceSummary()}`,
     '',
     `View my design: ${designURL()}`,
     '',
@@ -446,12 +477,15 @@ function moveTopping(index, x, z, placement) {
 
   snapshot();
 
-  state.placements[index] = {
-    ...placement,
-    type: state.placements[index].type,
-    x,
-    z
-  };
+  const existing = state.placements[index];
+
+    state.placements[index] = {
+      ...existing,
+      ...placement,
+      type: existing.type,
+      x,
+      z
+    };
 
   render();
 }
@@ -521,6 +555,7 @@ root.addEventListener('click', async event => {
     });
 
     state.placements = [];
+    state.appearance = { ...defaultAppearance };
 
 
     render();
@@ -533,29 +568,53 @@ root.addEventListener('click', async event => {
 
   if (!key || !choices[key]?.includes(value)) return;
 
+  // An icing swatch can also replace a custom icing colour.
+  const replacesCustomIcing =
+    key === 'colour' && Boolean(state.appearance?.icingColour);
+
+  if (state[key] === value && !replacesCustomIcing) {
+    if (key === 'topping' && value !== 'None') {
+      setView(mode === 'side' ? 'side' : 'decorate');
+    }
+
+    return;
+  }
+
+  // Save the complete previous design before changing anything.
   snapshot();
+
   state[key] = value;
 
-  // Different outlines need fresh placement to avoid floating decorations.
-const changesSurface = ['shape', 'tiers', 'finish'].includes(key);
-const removedDecorations = changesSurface && state.placements.length > 0;
+  if (key === 'colour') {
+    state.appearance.icingColour = '';
+  }
 
-if (changesSurface) {
-  state.placements = [];
-}
+  const changesSurface = ['shape', 'tiers', 'finish'].includes(key);
+  const removedDecorations =
+    changesSurface && state.placements.length > 0;
+
+  if (changesSurface) {
+    state.placements = [];
+  }
 
   render();
 
   if (key === 'topping') {
-  setView(mode === 'side' ? 'side' : 'decorate');
-} else if (changesSurface) {
-  setView('rotate');
+    setView(
+      value === 'None'
+        ? 'rotate'
+        : mode === 'side'
+          ? 'side'
+          : 'decorate'
+    );
+  } else if (changesSurface) {
+    setView('rotate');
 
-  if (removedDecorations) {
-    hint.textContent =
-      'The cake surface changed, so decorations were cleared. Undo restores the previous design.';
+    if (removedDecorations) {
+      hint.textContent =
+        'The cake surface changed, so decorations were cleared. Undo restores the previous design.';
+    }
   }
-}
 });
 
 $('#cake-message').addEventListener('focus', () => {
@@ -568,4 +627,4 @@ $('#cake-message').addEventListener('input', event => {
   render();
 
   
-});
+}); 
