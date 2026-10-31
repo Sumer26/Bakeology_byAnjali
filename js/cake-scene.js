@@ -77,11 +77,14 @@ export function createCakeScene(
         piping.bumpScale = 0.012;
 
   const chocolate = new THREE.MeshPhysicalMaterial({
-    color: '#381c13',
-    roughness: 0.3,
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.3
-  });
+  color: '#381c13',
+  metalness: 0,
+  roughness: 0.28,
+  clearcoat: 0.48,
+  clearcoatRoughness: 0.24,
+  ior: 1.46,
+  side: THREE.DoubleSide
+});
 
   const cherryMaterial = new THREE.MeshPhysicalMaterial({
     color: '#8f1223',
@@ -306,37 +309,203 @@ export function createCakeScene(
   }
 
   if (state.finish.toLowerCase().includes('drip')) {
-    const capGeometry = new THREE.ExtrudeGeometry(shape, {
-      depth: 0.025,
-      bevelEnabled: true,
-      bevelThickness: 0.015,
-      bevelSize: 0.025,
-      bevelSegments: 3,
-      curveSegments: 40
-    });
+  addGanache(shape, base, height, tier, metadata);
+}
+}
+function addGanache(shape, base, height, tier, metadata) {
+  const top = base + height;
 
-    capGeometry.rotateX(-Math.PI / 2);
+  // The top coating overlaps the flowing edge below.
+  const capGeometry = new THREE.ExtrudeGeometry(shape, {
+    depth: 0.022,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.045,
+    bevelSegments: 5,
+    curveSegments: 64
+  });
 
-    const cap = mesh(capGeometry, chocolate);
-    cap.position.y = base + height;
-    cap.userData.surface = metadata;
-    cap.userData.cap = true;
+  capGeometry.rotateX(-Math.PI / 2);
 
-    shape.getSpacedPoints(24).slice(0, -1).forEach((point, index) => {
-      const length = 0.09 + (Math.sin(index * 8.7) + 1) * 0.075;
+  const cap = mesh(capGeometry, chocolate);
+  cap.position.y = top;
+  cap.userData.surface = metadata;
+  cap.userData.cap = true;
 
-      const drip = mesh(
-        new THREE.CapsuleGeometry(0.035, length, 6, 12),
-        chocolate
-      );
+  const segments = 640;
+  const rows = 14;
+  const points = shape.getSpacedPoints(segments).slice(0, -1);
+  const count = points.length;
 
-      drip.position.set(
-        point.x * 1.012,
-        base + height - length / 2,
-        -point.y * 1.012
-      );
-    });
+  // Determine the outward direction for every cake silhouette.
+  let signedArea = 0;
+  let perimeter = 0;
+  const distances = [0];
+
+  for (let i = 0; i < count; i++) {
+    const a = points[i];
+    const b = points[(i + 1) % count];
+
+    signedArea += a.x * b.y - b.x * a.y;
+    perimeter += a.distanceTo(b);
+    distances.push(perimeter);
   }
+
+  const orientation = signedArea >= 0 ? 1 : -1;
+
+  // Stable randomness: changing colour won't rearrange the drips.
+  function random(index) {
+    const value = Math.sin(
+      index * 127.1 + tier * 311.7 + perimeter * 19.3
+    ) * 43758.5453;
+
+    return value - Math.floor(value);
+  }
+
+  const dripCount = Math.max(12, Math.round(perimeter / 0.39));
+
+  const drips = Array.from({ length: dripCount }, (_, index) => {
+    const longDrip = index % 4 === 0;
+
+    return {
+      centre:
+        ((index + 0.15 + random(index + 1) * 0.7) / dripCount) *
+        perimeter,
+
+      // Width is measured along the perimeter.
+      width: 0.055 + random(index + 31) * 0.045,
+
+      length: height * (
+        longDrip
+          ? 0.29 + random(index + 61) * 0.11
+          : 0.09 + random(index + 61) * 0.20
+      )
+    };
+  });
+
+  const positions = [];
+  const indices = [];
+
+  for (let i = 0; i <= count; i++) {
+    const index = i % count;
+    const point = points[index];
+    const previous = points[(index - 1 + count) % count];
+    const next = points[(index + 1) % count];
+
+    const tangent = next.clone().sub(previous).normalize();
+
+    const outward = new THREE.Vector2(
+      tangent.y * orientation,
+      -tangent.x * orientation
+    );
+
+    const distance = distances[index];
+    const progress = distance / perimeter;
+
+    // A gently uneven ribbon joins all the individual flows.
+    let depth =
+      0.045 +
+      0.009 * Math.sin(progress * Math.PI * 10 + tier) +
+      0.006 * Math.sin(progress * Math.PI * 22);
+
+    let flow = 0;
+
+    for (const drip of drips) {
+      const rawDistance = Math.abs(distance - drip.centre);
+      const wrappedDistance = Math.min(
+        rawDistance,
+        perimeter - rawDistance
+      );
+
+      const relative = wrappedDistance / drip.width;
+
+      // Rounded flow profile with broader shoulders.
+      const narrowFlow = Math.exp(-relative * relative * 1.6);
+      const shoulderFlow = Math.exp(
+        -relative * relative * 0.32
+      );
+
+      depth += drip.length * (
+        narrowFlow * 0.82 + shoulderFlow * 0.18
+      );
+
+      flow = Math.max(flow, narrowFlow);
+    }
+
+    // Keep long flows above the lower edge of the tier.
+    depth = Math.min(depth, height * 0.49);
+
+    for (let row = 0; row <= rows; row++) {
+      const t = row / rows;
+
+      // Sink the lower lip slightly into the icing, avoiding
+      // a cut-paper edge. The middle remains softly rounded.
+      const roundedLip = 0.015 * Math.sin(Math.PI * t);
+      const fullerTip =
+        0.012 * flow *
+        Math.exp(-Math.pow((t - 0.83) / 0.16, 2));
+
+      const offset =
+        0.045 - 0.012 * t +
+        roundedLip +
+        fullerTip;
+
+      positions.push(
+        point.x + outward.x * offset,
+        top + 0.012 - depth * t,
+        -(point.y + outward.y * offset)
+      );
+    }
+  }
+
+  const stride = rows + 1;
+
+  for (let i = 0; i < count; i++) {
+    for (let row = 0; row < rows; row++) {
+      const a = i * stride + row;
+      const b = (i + 1) * stride + row;
+      const c = b + 1;
+      const d = a + 1;
+
+      if (orientation > 0) {
+        indices.push(a, b, d, b, c, d);
+      } else {
+        indices.push(a, d, b, b, d, c);
+      }
+    }
+  }
+
+  const geometry = new THREE.BufferGeometry();
+
+  geometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3)
+  );
+
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+
+  // Average normals at the closed seam.
+  const normals = geometry.getAttribute('normal');
+
+  for (let row = 0; row <= rows; row++) {
+    const first = row;
+    const last = count * stride + row;
+
+    const normal = new THREE.Vector3()
+      .fromBufferAttribute(normals, first)
+      .add(new THREE.Vector3().fromBufferAttribute(normals, last))
+      .normalize();
+
+    normals.setXYZ(first, normal.x, normal.y, normal.z);
+    normals.setXYZ(last, normal.x, normal.y, normal.z);
+  }
+
+  normals.needsUpdate = true;
+  geometry.computeBoundingSphere();
+
+  // No placement metadata: decorations cannot sit on wet drips.
+  mesh(geometry, chocolate);
 }
 
   function rebuildCake() {
@@ -818,8 +987,8 @@ function hitSurface(event, type, ignoreIndex) {
     }
   } else {
     const topClearance = state.finish.toLowerCase().includes('drip')
-      ? 0.33
-      : state.finish === 'Piping' ? 0.14 : 0.07;
+        ? info.height * 0.49 + 0.025
+        : state.finish === 'Piping' ? 0.14 : 0.07;
 
     if (
       localHeight < radius + 0.09 ||

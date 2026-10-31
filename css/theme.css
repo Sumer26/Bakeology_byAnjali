@@ -1145,3 +1145,131 @@ html[data-theme="dark"] .atelier-chapter-link:focus-visible {
   outline: 2px solid var(--theme-focus);
   outline-offset: 5px;
 }
+
+/* Enquiry page — after-hours theme */
+html[data-theme="dark"] #cake-studio {
+  background: #17120f;
+  color: #f5ebdd;
+}
+
+html[data-theme="dark"] #cake-studio .studio-panel {
+  background: #241c17;
+  color: #f5ebdd;
+  border: 1px solid #4b392e;
+  border-top: 2px solid #d5aa78;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 18%);
+}
+
+html[data-theme="dark"] #cake-studio :is(
+  h1, legend, .studio-field, .studio-style b
+) {
+  color: #f5ebdd;
+}
+
+html[data-theme="dark"] #cake-studio h1 em {
+  color: #d8a397;
+}
+
+html[data-theme="dark"] #cake-studio :is(
+  .studio-intro > p,
+  .studio-step > p,
+  .studio-disclaimer,
+  .studio-footnote,
+  .studio-field small
+) {
+  color: #c9b9a7;
+}
+
+html[data-theme="dark"] #cake-studio :is(
+  .eyebrow, .studio-topline
+) {
+  color: #d5aa78;
+}
+
+html[data-theme="dark"] #cake-studio .studio-progress {
+  background: #4b392e;
+}
+
+html[data-theme="dark"] #cake-studio .studio-progress > span {
+  background: #d5aa78;
+}
+
+html[data-theme="dark"] #cake-studio .studio-chip > span,
+html[data-theme="dark"] #cake-studio .studio-style > span {
+  background: #2b211c;
+  color: #f5ebdd;
+  border-color: #947b66;
+}
+
+html[data-theme="dark"] #cake-studio
+.studio-chip input:checked + span {
+  background: #e8c49b;
+  border-color: #e8c49b;
+  color: #241916;
+}
+
+html[data-theme="dark"] #cake-studio
+.studio-style input:checked + span {
+  background: #352820;
+  border-color: #e8c49b;
+}
+
+html[data-theme="dark"] #cake-studio
+.studio-field :is(input, select, textarea) {
+  background: #2b211c;
+  color: #f5ebdd;
+  border-color: #947b66;
+  color-scheme: dark;
+  caret-color: #e8c49b;
+}
+
+html[data-theme="dark"] #cake-studio
+.studio-field :is(input, textarea)::placeholder {
+  color: #b7a593;
+  opacity: 1;
+}
+
+html[data-theme="dark"] #cake-studio :is(option, optgroup) {
+  background: #2b211c;
+  color: #f5ebdd;
+}
+
+html[data-theme="dark"] #cake-studio .studio-summary {
+  background: #30251e;
+  color: #c9b9a7;
+  border-color: #4b392e;
+}
+
+html[data-theme="dark"] #cake-studio .studio-summary strong {
+  color: #f5ebdd;
+}
+
+html[data-theme="dark"] #cake-studio .studio-next {
+  background: #e8c49b;
+  border-color: #e8c49b;
+  color: #241916;
+}
+
+html[data-theme="dark"] #cake-studio .studio-back {
+  color: #f5ebdd;
+}
+
+html[data-theme="dark"] #cake-studio
+:is(button, input, select, textarea, a):focus-visible,
+html[data-theme="dark"] #cake-studio
+:is(.studio-chip, .studio-style) input:focus-visible + span {
+  outline: 2px solid #e7bd8b;
+  outline-offset: 4px;
+}
+
+@media (hover: hover) {
+  html[data-theme="dark"] #cake-studio
+  .studio-chip input:not(:checked) + span:hover {
+    background: #352820;
+    border-color: #d5aa78;
+  }
+
+  html[data-theme="dark"] #cake-studio .studio-next:hover {
+    background: #f1d5b4;
+  }
+}
