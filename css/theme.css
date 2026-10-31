@@ -1,0 +1,201 @@
+/* After-hours at Bakeology — toggle and transition */
+
+/* Higher specificity protects this button from general button styles. */
+.header .theme-toggle {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 44px;
+
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+
+  appearance: none;
+  border: 1px solid var(--theme-control-border);
+  border-radius: 50%;
+
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  cursor: pointer;
+  isolation: isolate;
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  background: var(--theme-raised);
+}
+
+.theme-toggle__icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.theme-toggle__sun,
+.theme-toggle__moon {
+  transform-origin: 12px 12px;
+}
+
+.theme-toggle__sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle__moon {
+  opacity: 0;
+  transform: rotate(-35deg) scale(0.65);
+}
+
+:root[data-theme="dark"] .theme-toggle__sun {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.65);
+}
+
+:root[data-theme="dark"] .theme-toggle__moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Enable motion only after initial theme setup. */
+:root.theme-ready .theme-toggle {
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+:root.theme-ready .theme-toggle__sun,
+:root.theme-ready .theme-toggle__moon {
+  transition:
+    opacity 260ms ease,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .header .theme-toggle:hover {
+    transform: translateY(-2px);
+    border-color: var(--theme-accent);
+    background: var(--theme-raised);
+  }
+}
+
+.header .theme-toggle:active {
+  transform: scale(0.94);
+}
+
+.header .theme-toggle:focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 4px;
+}
+
+.theme-toggle__tooltip {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 5;
+
+  width: max-content;
+  max-width: min(240px, calc(100vw - 32px));
+  padding: 10px 13px;
+
+  border: 1px solid var(--theme-control-border);
+  border-radius: 5px;
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: var(--theme-header-shadow);
+
+  font: 400 12px/1.5 'DM Sans', sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  pointer-events: none;
+
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    visibility 160ms ease;
+}
+
+.theme-toggle:focus-visible .theme-toggle__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (hover: hover) {
+  .theme-toggle:hover .theme-toggle__tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.theme-toggle[aria-disabled="true"] .theme-toggle__tooltip {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The destination snapshot sits above the previous page.
+   JavaScript animates its circular clipping boundary. */
+html.bakeology-theme-reveal::view-transition-old(root),
+html.bakeology-theme-reveal::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.bakeology-theme-reveal::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.bakeology-theme-reveal::view-transition-new(root) {
+  z-index: 2;
+}
+
+html.bakeology-theme-reveal::view-transition-group(root) {
+  animation: none;
+}
+
+html.bakeology-theme-reveal::view-transition {
+  pointer-events: none;
+}
+
+/* Capture final theme colours instead of intermediate hover fades.
+   Existing scroll transforms and animations are not reset. */
+html.bakeology-theme-reveal,
+html.bakeology-theme-reveal *,
+html.bakeology-theme-reveal *::before,
+html.bakeology-theme-reveal *::after {
+  transition: none !important;
+}
+
+/* Small fallback for browsers without the circular reveal. */
+html.bakeology-theme-fade body,
+html.bakeology-theme-fade .header,
+html.bakeology-theme-fade .mobile-nav,
+html.bakeology-theme-fade .footer {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header .theme-toggle,
+  .theme-toggle__sun,
+  .theme-toggle__moon,
+  .theme-toggle__tooltip {
+    transition: none !important;
+  }
+
+  .header .theme-toggle:hover,
+  .header .theme-toggle:active {
+    transform: none;
+  }
+}

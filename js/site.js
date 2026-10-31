@@ -1,33 +1,72 @@
 const toggle = document.querySelector('.mobile-toggle');
 const nav = document.querySelector('.mobile-nav');
+const desktopLayout = matchMedia('(min-width: 1101px)');
 
-function closeMenu() {
+function closeMenu({ restoreFocus = false } = {}) {
+  if (!toggle || !nav) return;
+
   nav.hidden = true;
   toggle.setAttribute('aria-expanded', 'false');
+
+  if (restoreFocus) {
+    toggle.focus({ preventScroll: true });
+  }
 }
 
-toggle?.addEventListener('click', () => {
-  nav.hidden = !nav.hidden;
+if (toggle && nav) {
   toggle.setAttribute('aria-expanded', String(!nav.hidden));
-});
 
-nav?.addEventListener('click', event => {
-  if (event.target.closest('a')) closeMenu();
-});
+  toggle.addEventListener('click', () => {
+    const opening = nav.hidden;
 
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && nav && !nav.hidden) {
+    nav.hidden = !opening;
+    toggle.setAttribute('aria-expanded', String(opening));
+  });
+
+  nav.addEventListener('click', event => {
+    if (event.target.closest('a')) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !nav.hidden) {
+      closeMenu({ restoreFocus: true });
+    }
+  });
+
+  // Dismiss the menu when clicking elsewhere.
+  document.addEventListener('click', event => {
+    if (
+      !nav.hidden &&
+      !nav.contains(event.target) &&
+      !toggle.contains(event.target)
+    ) {
+      closeMenu();
+    }
+  });
+
+  desktopLayout.addEventListener('change', event => {
+    if (!event.matches) return;
+
+    // Avoid leaving keyboard focus inside navigation being hidden.
+    const focusWillBeHidden =
+      nav.contains(document.activeElement) ||
+      document.activeElement === toggle;
+
     closeMenu();
-    toggle.focus();
-  }
-});
 
-matchMedia('(min-width:1001px)').addEventListener(
-  'change',
-  event => {
-    if (event.matches) closeMenu();
+    if (focusWillBeHidden) {
+      document.querySelector('.wordmark')?.focus({
+        preventScroll: true
+      });
+    }
+  });
+
+  if (desktopLayout.matches) {
+    closeMenu();
   }
-);
+}
 
 const year = document.getElementById('year');
 
@@ -48,7 +87,9 @@ if (
     '#enquire': 'contact.html'
   };
 
-  if (routes[location.hash]) {
-    location.replace(routes[location.hash]);
+  const destination = routes[location.hash];
+
+  if (destination) {
+    location.replace(destination);
   }
 }
