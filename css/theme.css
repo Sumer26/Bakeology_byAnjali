@@ -199,3 +199,339 @@ html.bakeology-theme-fade .footer {
     transform: none;
   }
 }
+
+/* =========================================================
+   AFTER-HOURS — CAKE DESIGN STUDIO
+   ========================================================= */
+
+html[data-theme="dark"] .cake-customizer {
+  --studio-bg: #17120f;
+  --studio-panel: #241c17;
+  --studio-raised: #30251e;
+  --studio-text: #f5ebdd;
+  --studio-muted: #c9b9a7;
+  --studio-line: #4b392e;
+  --studio-control-line: #947b66;
+  --studio-accent: #e8c49b;
+
+  background: var(--studio-bg);
+  color: var(--studio-text);
+}
+
+/* Headline and supporting copy */
+
+html[data-theme="dark"] .cake-customizer h1 {
+  color: var(--studio-text);
+}
+
+html[data-theme="dark"] .cake-customizer h1 em {
+  color: #d8a397;
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  .kicker,
+  .index,
+  legend span,
+  .appearance-eyebrow
+) {
+  color: #d5aa78;
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  .intro p,
+  .caption,
+  .input-note,
+  .note,
+  .save-status,
+  .studio-hint
+) {
+  color: var(--studio-muted);
+}
+
+/* Fine structural dividers */
+
+html[data-theme="dark"] .cake-customizer :is(
+  .layout,
+  .controls,
+  fieldset,
+  .preview-foot,
+  .studio-tools
+) {
+  border-color: var(--studio-line);
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  legend,
+  .writing label,
+  .preview-foot p
+) {
+  color: var(--studio-text);
+}
+
+/* A warm, dark studio behind the cake.
+   The canvas and cake materials retain their original colours. */
+
+html[data-theme="dark"] .cake-customizer .preview {
+  background: var(--studio-bg);
+}
+
+html[data-theme="dark"] .cake-customizer .art {
+  background:
+    radial-gradient(
+      ellipse at 50% 58%,
+      rgba(143, 101, 65, 0.2) 0%,
+      rgba(83, 57, 38, 0.1) 42%,
+      transparent 72%
+    ),
+    #17120f;
+}
+
+html[data-theme="dark"] .cake-customizer .text-button {
+  color: var(--studio-muted);
+}
+
+html[data-theme="dark"] .cake-customizer .text-button:hover {
+  color: var(--studio-accent);
+}
+
+/* Shape, tiers, finishes and topping choices */
+
+html[data-theme="dark"] .cake-customizer .choices button {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-control-line);
+}
+
+html[data-theme="dark"] .cake-customizer
+.choices button[aria-pressed="true"] {
+  background: var(--studio-accent);
+  color: #241916;
+  border-color: var(--studio-accent);
+}
+
+/* Preserve the true icing swatch colours.
+   These override the older swatch rules using !important. */
+
+html[data-theme="dark"] .cake-customizer .swatches button {
+  background: transparent !important;
+  color: var(--studio-muted) !important;
+}
+
+html[data-theme="dark"] .cake-customizer
+.swatches button[aria-pressed="true"] {
+  background: var(--studio-raised) !important;
+  color: var(--studio-text) !important;
+}
+
+html[data-theme="dark"] .cake-customizer .swatches i {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+html[data-theme="dark"] .cake-customizer
+.swatches button[aria-pressed="true"] i {
+  outline-color: var(--studio-accent);
+}
+
+/* Preview toolbar */
+
+html[data-theme="dark"] .cake-customizer .studio-tools button {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-control-line);
+}
+
+html[data-theme="dark"] .cake-customizer
+.studio-tools button[aria-pressed="true"],
+html[data-theme="dark"] .cake-customizer
+.studio-tools .studio-finish {
+  background: var(--studio-accent);
+  color: #241916;
+  border-color: var(--studio-accent);
+}
+
+html[data-theme="dark"] .cake-customizer
+.studio-tools button:disabled {
+  background: var(--studio-panel);
+  color: var(--studio-muted);
+  border-color: var(--studio-line);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Flavour and colour editor panels */
+
+html[data-theme="dark"] .cake-customizer .appearance-studio {
+  color: var(--studio-text);
+}
+
+html[data-theme="dark"] .cake-customizer .flavour-edit {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-line);
+  border-top-color: var(--flavour-accent, #d5aa78);
+}
+
+html[data-theme="dark"] .cake-customizer .colour-editor {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-line);
+}
+
+/* Cover descriptive copy without changing palette chips. */
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio :is(p, small, label, figcaption) {
+  color: var(--studio-muted);
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio :is(h2, h3, summary) {
+  color: var(--studio-text);
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio .appearance-eyebrow {
+  color: #d5aa78;
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio :is(details, summary) {
+  border-color: var(--studio-line);
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio summary:hover {
+  color: var(--studio-accent);
+}
+
+/* Flavour cards, category filters and palette actions */
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio button {
+  background: var(--studio-raised);
+  color: var(--studio-text);
+  border-color: var(--studio-control-line);
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio button[aria-pressed="true"] {
+  background: #443225;
+  color: var(--studio-text);
+  border-color: var(--studio-accent);
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio button[aria-pressed="true"] :is(small, span) {
+  color: inherit;
+}
+
+html[data-theme="dark"] .cake-customizer
+.appearance-studio button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Native dropdowns, search, writing and share-link fields */
+
+html[data-theme="dark"] .cake-customizer :is(
+  select,
+  textarea,
+  input:not([type="color"]):not([type="checkbox"]):not([type="radio"])
+) {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-control-line);
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  input,
+  textarea
+)::placeholder {
+  color: #b7a593;
+  opacity: 1;
+}
+
+html[data-theme="dark"] .cake-customizer select option {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+}
+
+html[data-theme="dark"] .cake-customizer input[type="color"] {
+  background: var(--studio-raised);
+  border-color: var(--studio-control-line);
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .cake-customizer #cake-message {
+  background: transparent;
+  color: var(--studio-text);
+  border-bottom-color: var(--studio-control-line);
+}
+
+/* Itemised estimate */
+
+html[data-theme="dark"] .cake-customizer .cake-price {
+  background: var(--studio-panel);
+  color: var(--studio-text);
+  border-color: var(--studio-line);
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  .cake-price__heading,
+  .cake-price__total
+) {
+  border-color: var(--studio-line);
+}
+
+html[data-theme="dark"] .cake-customizer
+.cake-price__heading > :last-child {
+  color: #d5aa78;
+}
+
+html[data-theme="dark"] .cake-customizer .cake-price__lines dt {
+  color: var(--studio-muted);
+}
+
+html[data-theme="dark"] .cake-customizer :is(
+  .cake-price__lines dd,
+  .cake-price__total strong
+) {
+  color: var(--studio-text);
+}
+
+html[data-theme="dark"] .cake-customizer .cake-price > p {
+  color: var(--studio-muted);
+}
+
+/* Main enquiry action */
+
+html[data-theme="dark"] .cake-customizer .cta {
+  background: var(--studio-accent);
+  color: #241916;
+}
+
+html[data-theme="dark"] .cake-customizer .cta:hover {
+  background: #f1d5b4;
+}
+
+/* Clear keyboard focus throughout the studio */
+
+html[data-theme="dark"] .cake-customizer
+:is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid #e7bd8b;
+  outline-offset: 4px;
+}
+
+@media (hover: hover) {
+  html[data-theme="dark"] .cake-customizer
+  .choices:not(.swatches) button:not([aria-pressed="true"]):hover,
+  html[data-theme="dark"] .cake-customizer
+  .studio-tools button:not(:disabled):not([aria-pressed="true"]):not(.studio-finish):hover,
+  html[data-theme="dark"] .cake-customizer
+  .appearance-studio button:not(:disabled):not([aria-pressed="true"]):hover {
+    background: #403025;
+    border-color: var(--studio-accent);
+    color: var(--studio-text);
+  }
+}
