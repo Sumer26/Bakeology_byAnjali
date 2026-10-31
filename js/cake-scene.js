@@ -1,16 +1,23 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-
-
 export function createCakeScene(
   host,
   onPlace,
   onMove,
   onReject = () => {}
 ) {
+  const scene = new THREE.Scene();
 
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true
+  });
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 1.75)
+  );
+
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -18,6 +25,7 @@ export function createCakeScene(
   renderer.toneMappingExposure = 1.15;
 
   host.replaceChildren(renderer.domElement);
+
 
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 60);
   const controls = new OrbitControls(camera, renderer.domElement);
