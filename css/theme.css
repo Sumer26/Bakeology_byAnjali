@@ -535,3 +535,295 @@ html[data-theme="dark"] .cake-customizer
     color: var(--studio-text);
   }
 }
+
+/* =========================================================
+   AFTER-HOURS — FLAVOURS
+   ========================================================= */
+
+html[data-theme="dark"] .menu {
+  background: var(--theme-background);
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .menu :is(h1, h2) {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] .menu :is(h1, h2) em {
+  color: var(--theme-rose);
+}
+
+html[data-theme="dark"] .menu-intro p {
+  color: var(--theme-muted);
+}
+
+html[data-theme="dark"] .menu-aside {
+  color: var(--theme-muted);
+  border-color: var(--theme-border);
+}
+
+html[data-theme="dark"] .menu-board {
+  background: var(--theme-section);
+  color: var(--theme-text);
+
+  border: 1px solid var(--theme-border);
+  border-top: 2px solid var(--theme-accent);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Cream / dry cake categories */
+
+html[data-theme="dark"] .menu-switch {
+  flex-wrap: wrap;
+  border-color: var(--theme-border);
+}
+
+html[data-theme="dark"] .menu-switch button {
+  background: transparent;
+  color: var(--theme-muted);
+  border-color: var(--theme-control-border);
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+html[data-theme="dark"] .menu-switch button.selected,
+html[data-theme="dark"] .menu-switch button[aria-pressed="true"] {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+  border-color: var(--theme-action-background);
+}
+
+/* Full-width, quietly interactive menu rows */
+
+html[data-theme="dark"] #menu-list .flavour-choice {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto 32px;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+  min-height: 78px;
+  margin: 0;
+  padding: 18px 12px;
+
+  background: transparent;
+  color: var(--theme-text);
+  border: 0;
+  border-bottom: 1px solid var(--theme-border);
+  border-radius: 0;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+html[data-theme="dark"] #menu-list .menu-count {
+  color: var(--theme-muted);
+  font-size: 10px;
+}
+
+html[data-theme="dark"] #menu-list .menu-name {
+  min-width: 0;
+  color: var(--theme-text);
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+html[data-theme="dark"] #menu-list .menu-price {
+  color: var(--theme-muted);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+html[data-theme="dark"] #menu-list .flavour-choice__mark {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--theme-control-border);
+  border-radius: 50%;
+
+  background: transparent;
+  color: var(--theme-accent);
+  font: 400 18px/1 'DM Sans', sans-serif;
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+html[data-theme="dark"] #menu-list
+.flavour-choice[aria-pressed="true"] {
+  background: var(--theme-raised);
+  box-shadow: inset 2px 0 0 var(--theme-accent);
+}
+
+html[data-theme="dark"] #menu-list
+.flavour-choice[aria-pressed="true"] .menu-price {
+  color: var(--theme-text);
+}
+
+html[data-theme="dark"] #menu-list
+.flavour-choice[aria-pressed="true"] .flavour-choice__mark {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+  border-color: var(--theme-action-background);
+}
+
+html[data-theme="dark"] #menu-list .flavour-choice:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--theme-focus);
+  outline-offset: -2px;
+}
+
+/* Selected flavour summary */
+
+html[data-theme="dark"] .menu .flavour-selection {
+  margin-top: 28px;
+  padding: 24px;
+
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  border: 1px solid var(--theme-border);
+}
+
+html[data-theme="dark"] .menu .flavour-selection__label {
+  margin: 0 0 10px;
+  color: var(--theme-accent);
+  font: 500 10px/1.6 'DM Mono', monospace;
+  letter-spacing: 0.14em;
+}
+
+html[data-theme="dark"] .menu .flavour-selection__name {
+  margin: 0 0 12px;
+  color: var(--theme-text);
+  font: 400 clamp(28px, 3vw, 38px)/1.1
+    'Instrument Serif', Georgia, serif;
+}
+
+html[data-theme="dark"] .menu .flavour-selection__note,
+html[data-theme="dark"] .menu .menu-footnote {
+  color: var(--theme-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+html[data-theme="dark"] .menu .flavour-selection__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 12px 18px;
+
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+  border: 1px solid var(--theme-action-background);
+  border-radius: 3px;
+
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* =========================================================
+   AFTER-HOURS — COLLECTION FILTER CONTRAST
+   ========================================================= */
+
+html[data-theme="dark"] .filters button {
+  background: transparent;
+  color: var(--theme-muted);
+  border-color: var(--theme-control-border);
+}
+
+html[data-theme="dark"] .filters button:is(
+  .selected,
+  .active,
+  .is-active,
+  [aria-pressed="true"],
+  [aria-selected="true"]
+) {
+  background: var(--theme-action-background);
+  color: var(--theme-action-text);
+  border-color: var(--theme-action-background);
+}
+
+html[data-theme="dark"] .filters button span {
+  color: inherit;
+  opacity: 1;
+}
+
+/* Restrained hover feedback */
+
+@media (hover: hover) {
+  html[data-theme="dark"] #menu-list .flavour-choice:hover {
+    background: var(--theme-raised);
+  }
+
+  html[data-theme="dark"] .menu-switch button:hover,
+  html[data-theme="dark"] .filters button:hover {
+    background: var(--theme-raised);
+    color: var(--theme-text);
+    border-color: var(--theme-accent);
+  }
+
+  html[data-theme="dark"] .menu-switch button.selected:hover,
+  html[data-theme="dark"] .menu-switch
+  button[aria-pressed="true"]:hover,
+  html[data-theme="dark"] .filters button:is(
+    .selected,
+    .active,
+    .is-active,
+    [aria-pressed="true"],
+    [aria-selected="true"]
+  ):hover {
+    background: var(--theme-action-background);
+    color: var(--theme-action-text);
+  }
+
+  html[data-theme="dark"] .menu .flavour-selection__link:hover {
+    background: #f1d5b4;
+    border-color: #f1d5b4;
+  }
+}
+
+@media (max-width: 480px) {
+  html[data-theme="dark"] #menu-list .flavour-choice {
+    grid-template-columns: 18px minmax(0, 1fr) auto 28px;
+    gap: 9px;
+    padding: 16px 8px;
+  }
+
+  html[data-theme="dark"] #menu-list .menu-name {
+    font-size: 24px;
+  }
+
+  html[data-theme="dark"] #menu-list .menu-price {
+    font-size: 12px;
+  }
+
+  html[data-theme="dark"] #menu-list .flavour-choice__mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  html[data-theme="dark"] .menu .flavour-selection {
+    padding: 20px;
+  }
+}
