@@ -951,7 +951,25 @@ renderer.domElement.addEventListener('pointercancel', () => {
     renderer.render(scene, camera);
   });
 
-  return { update, view };
+  function capture() {
+  // Render immediately before copying the WebGL canvas.
+  renderer.render(scene, camera);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = renderer.domElement.width;
+  canvas.height = renderer.domElement.height;
+
+  const context = canvas.getContext('2d');
+
+  context.fillStyle = '#eee7dc';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(renderer.domElement, 0, 0);
+
+  return canvas.toDataURL('image/png');
+}
+
+return { update, view, capture };
+
 }
 
 function makeIcingTexture() {

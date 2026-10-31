@@ -1,0 +1,100 @@
+.flavour-choice {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 0;
+  border-bottom: 1px solid var(--line, #dcd4cb);
+  background: transparent;
+  color: var(--ink, #302622);
+  padding: 18px 10px;
+  transition: background 180ms ease;
+}
+
+.flavour-choice:hover {
+  background: #eee5da;
+}
+
+.flavour-choice[aria-pressed="true"] {
+  background: #eadbd0;
+}
+
+.flavour-choice__mark {
+  flex: none;
+  width: 24px;
+  text-align: center;
+  color: #895b48;
+}
+
+.flavour-selection {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid #cdbfaf;
+  background: #f2ebe1;
+}
+
+.flavour-selection__label {
+  margin: 0 0 12px;
+  font: 10px 'DM Mono', monospace;
+  letter-spacing: 1.5px;
+  color: #946752;
+}
+
+.flavour-selection__name {
+  margin: 0;
+  font: 30px/1.2 'Playfair Display', serif;
+}
+
+.flavour-selection__note {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #796b60;
+}
+
+.flavour-selection__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.flavour-selection [hidden] {
+  display: none !important;
+}
+
+.flavour-choice:focus-visible,
+.flavour-selection a:focus-visible {
+  outline: 2px solid #ad6f61;
+  outline-offset: 3px;
+}
+
+.cake-customizer .design-flavour {
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #cdbfaf;
+}
+
+.cake-customizer .design-flavour label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.cake-customizer .design-flavour select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #cdbfaf;
+  background: #faf6ee;
+  color: #493b31;
+  font: inherit;
+  font-size: 16px;
+}
+
+.cake-customizer .design-flavour p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #796b60;
+}

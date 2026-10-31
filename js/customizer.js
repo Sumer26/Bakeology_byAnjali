@@ -1,6 +1,15 @@
 import { initial, choices, colours, whatsapp } from './config.js';
 import { createCakeScene } from './cake-scene.js';
 import { createPricePanel } from './cake-pricing.js';
+import { downloadDesignPDF } from './design-pdf.js';
+
+import {
+  flavours,
+  findFlavour,
+  saveFlavour,
+  savedFlavour,
+  categoryLabel
+} from './data/flavours.js';
 
 
 const root = document.querySelector('.cake-customizer');
@@ -29,6 +38,17 @@ choices.topping = [
 ];
 
 let state = loadState();
+
+const requestedFlavour = findFlavour(
+  new URLSearchParams(location.search).get('flavour')
+);
+
+if (requestedFlavour) {
+  state.flavour = requestedFlavour.id;
+} else if (!state.flavour) {
+  state.flavour = savedFlavour()?.id || '';
+}
+
 let scene;
 let mode = 'rotate';
 
@@ -100,6 +120,80 @@ addChoiceButtons('finish');
 addChoiceButtons('topping');
 
 const updatePrice = createPricePanel($('.preview'));
+const flavourSection = document.createElement('div');
+flavourSection.className = 'design-flavour';
+
+flavourSection.innerHTML = `
+  <label for="design-flavour">The flavour inside</label>
+  <select id="design-flavour">
+    <option value="">Choose a flavour…</option>
+  </select>
+  <p id="design-flavour-note">
+    Choose from the same menu shown on our Flavours page.
+  </p>
+`;
+
+$('.controls').prepend(flavourSection);
+
+const flavourSelect = flavourSection.querySelector('select');
+const flavourNote = flavourSection.querySelector('p');
+
+const categories = [...new Set(flavours.map(item => item.category))];
+
+categories.forEach(category => {
+  const group = document.createElement('optgroup');
+  group.label = categoryLabel(category);
+
+  flavours
+    .filter(item => item.category === category)
+    .forEach(item => {
+      group.append(new Option(item.name, item.id));
+    });
+
+  flavourSelect.append(group);
+});
+
+flavourSelect.addEventListener('change', () => {
+  snapshot();
+  state.flavour = flavourSelect.value;
+  saveFlavour(state.flavour);
+  render();
+});
+
+const pdfButton = document.createElement('button');
+pdfButton.type = 'button';
+pdfButton.textContent = 'Download design PDF';
+toolbar.append(pdfButton);
+
+pdfButton.addEventListener('click', async () => {
+  if (!scene) {
+    hint.textContent = 'Wait for the cake preview to load first.';
+    return;
+  }
+
+  pdfButton.disabled = true;
+  pdfButton.textContent = 'Preparing PDF…';
+
+  try {
+    // Snapshot both together before awaiting the PDF library.
+    const exportState = JSON.parse(JSON.stringify(state));
+    const preview = scene.capture();
+
+    await downloadDesignPDF({
+      state: exportState,
+      preview
+    });
+
+    hint.textContent = 'Your design PDF is ready.';
+  } catch (error) {
+    console.error(error);
+    hint.textContent =
+      'The PDF could not be created. Check your internet connection and try again.';
+  } finally {
+    pdfButton.disabled = false;
+    pdfButton.textContent = 'Download design PDF';
+  }
+});
 
 try {
   scene = createCakeScene(
@@ -167,7 +261,7 @@ function validate(value) {
       nz: item.surface === 'side' ? item.nz : 0
     }));
 }
-
+  safe.flavour = findFlavour(value.flavour)?.id || '';
   return safe;
 }
 
@@ -241,6 +335,14 @@ function designURL() {
 }
 
 function render() {
+  flavourSelect.value = state.flavour || '';
+
+const flavour = findFlavour(state.flavour);
+
+flavourNote.textContent = flavour
+  ? `${categoryLabel(flavour.category)} · Listed menu price ₹${flavour.price}. This is a menu reference, not an extra charge in the custom estimate.`
+  : 'Choose from the same menu shown on our Flavours page.';
+
   updatePrice(state);
   scene?.update(state, colours[state.colour]);
 
@@ -261,6 +363,7 @@ function render() {
   $('#enquire').href = whatsapp([
     "Hello Bakeology by Anjali! I'd like to enquire about this cake:",
     summary(),
+    `Flavour: ${findFlavour(state.flavour)?.name || 'To be confirmed'}`,
     `Writing: ${state.message || 'None'}`,
     '',
     `View my design: ${designURL()}`,
