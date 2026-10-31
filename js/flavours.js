@@ -4,7 +4,7 @@ import {
   saveFlavour,
   savedFlavour,
   categoryLabel
-} from './data/flavous.js';
+} from './data/flavours.js';
 
 const list = document.getElementById('menu-list');
 
