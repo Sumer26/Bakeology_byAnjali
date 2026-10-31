@@ -1,100 +1,378 @@
-.flavour-choice {
+/* Bakeology — interactive flavour menu */
+
+.menu {
+  --flavour-ink: #352a24;
+  --flavour-rose: #a86d5d;
+  --flavour-line: #d9cbbd;
+  --flavour-paper: #faf7f1;
+  --flavour-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+.menu .menu-grid > * {
+  min-width: 0;
+}
+
+.menu .menu-board {
+  background: var(--flavour-paper);
+  border: 1px solid rgb(103 76 57 / 9%);
+  padding: clamp(22px, 3.5vw, 56px);
+  box-shadow: 0 24px 70px -55px rgb(65 40 26 / 30%);
+}
+
+/* Category controls */
+
+.menu .menu-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--flavour-line);
+}
+
+.menu .menu-switch button {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+  margin: 0;
+  padding: 12px 23px;
+  border: 1px solid var(--flavour-line);
+  border-radius: 999px;
+  background: transparent;
+  color: #75655a;
+  font: 400 13px/1.2 'DM Sans', sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease,
+    transform 350ms var(--flavour-ease);
+}
+
+.menu .menu-switch button.selected {
+  background: var(--flavour-ink);
+  border-color: var(--flavour-ink);
+  color: var(--flavour-paper);
+}
+
+/* Full-width menu rows */
+
+.menu #menu-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
+}
+
+.menu #menu-list .flavour-choice {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto 32px;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 20px);
+
+  width: 100%;
+  min-width: 0;
+  min-height: 84px;
+  margin: 0;
+  padding: 20px 8px;
+
+  border: 0;
+  border-bottom: 1px solid var(--flavour-line);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--flavour-ink);
+  font: inherit;
   text-align: left;
   cursor: pointer;
-  border: 0;
-  border-bottom: 1px solid var(--line, #dcd4cb);
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    color 260ms ease,
+    border-color 260ms ease;
+}
+
+/* A soft wash moves across the paper. */
+
+.menu #menu-list .flavour-choice::before {
+  content: '';
+  position: absolute;
+  inset: 5px 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(
+    100deg,
+    rgb(168 109 93 / 13%),
+    rgb(168 109 93 / 4%) 75%,
+    transparent
+  );
+  opacity: 0;
+  transform: scaleX(.88);
+  transform-origin: left center;
+  transition:
+    opacity 300ms ease,
+    transform 550ms var(--flavour-ease);
+}
+
+.menu #menu-list .menu-count {
+  min-width: 0;
+  color: #aa9788;
+  font: 400 10px/1.4 'DM Mono', monospace;
+  transition: color 260ms ease;
+}
+
+.menu #menu-list .menu-name {
+  min-width: 0;
+  color: inherit;
+  font: 400 clamp(25px, 2.1vw, 35px)/1.12
+    'Instrument Serif', Georgia, serif;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+  transition: transform 450ms var(--flavour-ease);
+}
+
+.menu #menu-list .menu-price {
+  color: #75655a;
+  font: 500 13px/1.4 'DM Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: color 260ms ease;
+}
+
+.menu #menu-list .flavour-choice__mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d8cabc;
+  border-radius: 50%;
   background: transparent;
-  color: var(--ink, #302622);
-  padding: 18px 10px;
-  transition: background 180ms ease;
+  color: #8c7564;
+  font: 400 17px/1 'DM Sans', sans-serif;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    transform 450ms var(--flavour-ease);
 }
 
-.flavour-choice:hover {
-  background: #eee5da;
+/* The selected flavour remains clearly marked. */
+
+.menu #menu-list .flavour-choice[aria-pressed="true"] {
+  color: var(--flavour-rose);
+  border-bottom-color: #b98b79;
 }
 
-.flavour-choice[aria-pressed="true"] {
-  background: #eadbd0;
+.menu #menu-list .flavour-choice[aria-pressed="true"]::before {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
+.menu #menu-list .flavour-choice[aria-pressed="true"] .menu-count,
+.menu #menu-list .flavour-choice[aria-pressed="true"] .menu-price {
+  color: var(--flavour-rose);
+}
+
+.menu #menu-list .flavour-choice[aria-pressed="true"]
 .flavour-choice__mark {
-  flex: none;
-  width: 24px;
-  text-align: center;
-  color: #895b48;
+  background: var(--flavour-ink);
+  border-color: var(--flavour-ink);
+  color: #fff8ef;
+  transform: scale(1.04);
 }
 
-.flavour-selection {
-  margin-top: 28px;
-  padding: 24px;
-  border: 1px solid #cdbfaf;
-  background: #f2ebe1;
+/* Selection summary — styled like a small studio invitation. */
+
+.menu .flavour-selection {
+  position: relative;
+  margin-top: 32px;
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid #dac8b7;
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgb(255 250 239 / 85%),
+      transparent 75%
+    ),
+    #efe4d7;
 }
 
-.flavour-selection__label {
-  margin: 0 0 12px;
-  font: 10px 'DM Mono', monospace;
-  letter-spacing: 1.5px;
-  color: #946752;
+.menu .flavour-selection::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 28px;
+  width: 44px;
+  height: 2px;
+  background: var(--flavour-rose);
 }
 
-.flavour-selection__name {
+.menu .flavour-selection__label {
+  margin: 0 0 15px;
+  color: var(--flavour-rose);
+  font: 400 9px/1.5 'DM Mono', monospace;
+  letter-spacing: .18em;
+}
+
+.menu .flavour-selection__name {
   margin: 0;
-  font: 30px/1.2 'Playfair Display', serif;
+  color: var(--flavour-ink);
+  font: 400 clamp(31px, 3vw, 44px)/1.08
+    'Instrument Serif', Georgia, serif;
+  letter-spacing: -.03em;
+  overflow-wrap: anywhere;
 }
 
-.flavour-selection__note {
-  font-size: 12px;
-  line-height: 1.7;
-  color: #796b60;
+.menu .flavour-selection__note {
+  max-width: 44ch;
+  margin: 15px 0 0;
+  color: #7d6c5e;
+  font: 400 12px/1.85 'DM Sans', sans-serif;
 }
 
-.flavour-selection__link {
+.menu .flavour-selection__link {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  margin-top: 8px;
-  font-size: 13px;
-  text-decoration: underline;
-  text-underline-offset: 5px;
-}
-
-.flavour-selection [hidden] {
-  display: none !important;
-}
-
-.flavour-choice:focus-visible,
-.flavour-selection a:focus-visible {
-  outline: 2px solid #ad6f61;
-  outline-offset: 3px;
-}
-
-.cake-customizer .design-flavour {
-  margin-bottom: 28px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid #cdbfaf;
-}
-
-.cake-customizer .design-flavour label {
-  display: block;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-.cake-customizer .design-flavour select {
-  width: 100%;
+  justify-content: center;
   min-height: 48px;
-  padding: 12px;
-  border: 1px solid #cdbfaf;
-  background: #faf6ee;
-  color: #493b31;
-  font: inherit;
-  font-size: 16px;
+  max-width: 100%;
+  margin-top: 25px;
+  padding: 14px 20px;
+  border: 1px solid var(--flavour-ink);
+  border-radius: 2px;
+  background: var(--flavour-ink);
+  color: #fff8ef;
+  font: 400 12px/1.5 'DM Sans', sans-serif;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 260ms ease,
+    border-color 260ms ease,
+    transform 350ms var(--flavour-ease);
 }
 
-.cake-customizer .design-flavour p {
-  font-size: 12px;
-  line-height: 1.6;
-  color: #796b60;
+.menu .flavour-selection__link[hidden] {
+  display: none;
+}
+
+.menu .menu-footnote {
+  margin-top: 24px;
+  color: #8b7c70;
+  font: 400 11px/1.8 'DM Sans', sans-serif;
+}
+
+/* Mouse interactions; touch devices keep clean resting states. */
+
+@media (hover: hover) and (pointer: fine) {
+  .menu .menu-switch button:hover {
+    border-color: var(--flavour-rose);
+    transform: translateY(-2px);
+  }
+
+  .menu #menu-list .flavour-choice:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .menu #menu-list .flavour-choice:hover .menu-name {
+    transform: translateX(4px);
+  }
+
+  .menu #menu-list .flavour-choice:hover .flavour-choice__mark {
+    border-color: var(--flavour-rose);
+    transform: scale(1.1);
+  }
+
+  .menu .flavour-selection__link:hover {
+    background: #704b3b;
+    border-color: #704b3b;
+    transform: translateY(-2px);
+  }
+}
+
+/* Keyboard navigation */
+
+.menu #menu-list .flavour-choice:focus-visible,
+.menu .menu-switch button:focus-visible,
+.menu .flavour-selection__link:focus-visible {
+  outline: 2px solid var(--flavour-rose);
+  outline-offset: 4px;
+}
+
+/* Phone layout */
+
+@media (max-width: 760px) {
+  .menu .menu-board {
+    padding: 24px 20px;
+  }
+
+  .menu #menu-list .flavour-choice {
+    grid-template-columns: 20px minmax(0, 1fr) auto 28px;
+    gap: 10px;
+    min-height: 78px;
+    padding: 18px 4px;
+  }
+
+  .menu #menu-list .menu-name {
+    font-size: clamp(24px, 5.5vw, 30px);
+  }
+
+  .menu #menu-list .menu-price {
+    font-size: 12px;
+  }
+
+  .menu #menu-list .flavour-choice__mark {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+
+  .menu .flavour-selection {
+    padding: 26px 22px;
+  }
+
+  .menu .flavour-selection__link {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .menu .menu-board {
+    padding-inline: 14px;
+  }
+
+  .menu #menu-list .flavour-choice {
+    grid-template-columns: 16px minmax(0, 1fr) auto 26px;
+    gap: 7px;
+  }
+
+  .menu #menu-list .menu-name {
+    font-size: 23px;
+  }
+
+  .menu #menu-list .flavour-choice__mark {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu .menu-switch button,
+  .menu #menu-list .flavour-choice,
+  .menu #menu-list .flavour-choice::before,
+  .menu #menu-list .menu-count,
+  .menu #menu-list .menu-name,
+  .menu #menu-list .menu-price,
+  .menu #menu-list .flavour-choice__mark,
+  .menu .flavour-selection__link {
+    transition: none;
+    transform: none;
+  }
 }

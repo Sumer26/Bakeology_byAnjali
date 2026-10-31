@@ -100,6 +100,28 @@ if (list) {
       });
 
       list.append(button);
+          if (
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      button.animate(
+        [
+          {
+            opacity: 0,
+            transform: 'translateY(12px)'
+          },
+          {
+            opacity: 1,
+            transform: 'translateY(0)'
+          }
+        ],
+        {
+          duration: 420,
+          delay: Math.min(index, 7) * 35,
+          easing: 'cubic-bezier(.22, 1, .36, 1)',
+          fill: 'backwards'
+        }
+      );
+    }
     });
 
     switches.forEach(button => {
