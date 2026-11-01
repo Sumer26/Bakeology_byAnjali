@@ -1,5 +1,5 @@
 import { cakes, labels } from './data/catalog.js';
-import { whatsapp } from './config.js';
+import { initialiseCakeDialog } from './cake-dialog.js';
 
 const gallery = document.getElementById('gallery');
 const dialog = document.getElementById('cake-dialog');
@@ -9,28 +9,8 @@ status.className = 'gallery-status';
 status.setAttribute('role', 'status');
 gallery.after(status);
 
-let opener;
+const openCake = initialiseCakeDialog(dialog);
 
-function openCake(cake, button) {
-  const [name, file, category, description] = cake;
-  opener = button;
-
-  const image = document.getElementById('dialog-image');
-  image.src = `assets/${file}.jpg`;
-  image.alt = `${name} cake`;
-
-  document.getElementById('dialog-title').textContent = name;
-  document.getElementById('dialog-category').textContent =
-    labels[category];
-  document.getElementById('dialog-desc').textContent =
-    description;
-
-  document.getElementById('dialog-link').href = whatsapp(
-    `Hello Bakeology by Anjali! I'm interested in the ${name} cake. Could you share availability and customisation details?`
-  );
-
-  dialog.showModal();
-}
 
 function render(filter = 'all') {
   const matches = cakes.filter(
@@ -88,10 +68,6 @@ document.querySelectorAll('[data-filter]').forEach(button => {
   });
 });
 
-document.querySelector('.dialog-close').addEventListener(
-  'click',
-  () => dialog.close()
-);
 
 dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;

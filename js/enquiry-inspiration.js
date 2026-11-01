@@ -1,59 +1,44 @@
-const cakes = [
-  {
-    file: 'peach-bloom.jpg',
-    name: 'Peach Bloom',
-    style: 'Vintage florals',
-    alt: 'Two-tier peach cake with piped roses, bows and pearls'
-  },
-  {
-    file: 'blue-belle.jpg',
-    name: 'Blue Belle',
-    style: 'Vintage piping',
-    alt: 'Blue and ivory cake with piped swirls and blue bows'
-  },
-  {
-    file: 'be-mine.jpg',
-    name: 'Be Mine',
-    style: 'Romantic ribbons',
-    alt: 'Red heart-shaped cake with berries and ribbon bows'
-  },
-  {
-    file: 'cherry-mocha.jpg',
-    name: 'Cherry Mocha',
-    style: 'Rich chocolate',
-    alt: 'Chocolate cake with mocha piping and cherries'
-  },
-  {
-    file: 'sun-kissed.jpg',
-    name: 'Sun Kissed',
-    style: 'Colourful celebrations',
-    alt: 'Orange celebration cake with citrus-coloured decorations'
-  },
-  {
-    file: 'sweetheart.jpg',
-    name: 'Sweetheart',
-    style: 'Love notes',
-    alt: 'Pink heart cake with strawberries and ivory piping'
-  }
-];
+import { cakes, labels } from './data/catalog.js';
+import { initialiseCakeDialog } from './cake-dialog.js';
 
 export function initialiseInspiration(form) {
   const gallery = document.getElementById('inspiration-gallery');
-  const toggle = document.querySelector('.inspiration-toggle');
-  if (!gallery || !toggle || !form) return;
+  const dialog = document.getElementById('cake-dialog');
+  const button = gallery?.querySelector('.inspiration-open');
+  let slide = gallery?.querySelector('.inspiration-slide');
 
+  if (!form || !dialog || !button || !slide || !cakes.length) return;
+
+  const openCake = initialiseCakeDialog(dialog);
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  let current = cakes[0];
+  let current = cakes.find(cake => cake[1] === 'peach-bloom') || cakes[0];
   let remaining = [];
-  let paused = motion.matches;
   let timer;
   let revision = 0;
-  let incoming;
-  let animation;
+  let fade;
+  let outgoing;
+
+  function updateCaption(element, cake) {
+    const [name, , category] = cake;
+    element.querySelector('.studio-image-caption > span').textContent =
+      labels[category];
+    element.querySelector('strong').textContent = name;
+  }
+
+  function settle() {
+    clearTimeout(timer);
+    revision++;
+    fade?.cancel();
+    fade = null;
+    outgoing?.remove();
+    outgoing = null;
+  }
 
   function schedule() {
     clearTimeout(timer);
-    if (paused || document.hidden) return;
+    if (dialog.open || document.hidden || motion.matches || cakes.length < 2) {
+      return;
+    }
 
     timer = setTimeout(() => {
       if (!remaining.length) {
@@ -61,98 +46,93 @@ export function initialiseInspiration(form) {
       }
 
       const index = Math.floor(Math.random() * remaining.length);
-      const [cake] = remaining.splice(index, 1);
-      show(cake);
-    }, 10000 + Math.random() * 5000);
-  }
-
-  function cancelPending() {
-    revision++;
-    clearTimeout(timer);
-    animation?.cancel();
-    animation = null;
-    incoming?.remove();
-    incoming = null;
+      const [next] = remaining.splice(index, 1);
+      show(next);
+    }, 7000);
   }
 
   async function show(cake) {
-    cancelPending();
+    settle();
     const request = revision;
 
-    try {
-      if (cake === current) return;
-
-      const photo = new Image();
-      photo.alt = cake.alt;
-      photo.src = `assets/${cake.file}`;
-      await photo.decode();
-      if (request !== revision) return;
-
-      const slide = gallery.firstElementChild.cloneNode(true);
-      slide.querySelector('img').replaceWith(photo);
-      slide.querySelector('.studio-image-caption > span').textContent = cake.style;
-      slide.querySelector('strong').textContent = cake.name;
-
-      const previous = gallery.firstElementChild;
-      incoming = slide;
-      gallery.append(slide);
-
-      if (!motion.matches) {
-        animation = slide.animate(
-          [{ opacity: 0 }, { opacity: 1 }],
-          { duration: 850, easing: 'ease-in-out' }
-        );
-        await animation.finished;
-      }
-
-      if (request !== revision) return;
-      previous.remove();
-      incoming = null;
-      animation = null;
-      current = cake;
-    } catch (error) {
-      if (request === revision) {
-        incoming?.remove();
-        incoming = null;
-        console.warn('Could not show inspiration photo:', cake.file, error);
-      }
-    } finally {
-      if (request === revision) schedule();
+    if (cake === current) {
+      schedule();
+      return;
     }
-  }
 
-  function setPaused(value) {
-    paused = value;
-    cancelPending();
-    toggle.textContent = paused ? 'Play slideshow' : 'Pause slideshow';
+    const [name, file] = cake;
+    const photo = new Image();
+    photo.alt = `${name} cake`;
+    photo.src = `assets/${file}.jpg`;
+
+    try {
+      await photo.decode();
+    } catch {
+      if (request === revision) schedule();
+      return;
+    }
+
+    // The visitor may have opened the dialog while the photo was loading.
+    if (request !== revision || dialog.open || document.hidden) return;
+
+    const next = slide.cloneNode(true);
+    next.querySelector('img').replaceWith(photo);
+    updateCaption(next, cake);
+
+    outgoing = slide;
+    gallery.insertBefore(next, button);
+    slide = next;
+    current = cake;
+    button.setAttribute('aria-label', `View ${name} cake details`);
+
+    if (motion.matches) {
+      outgoing.remove();
+      outgoing = null;
+    } else {
+      fade = next.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        { duration: 850, easing: 'ease-in-out' }
+      );
+
+      fade.onfinish = () => {
+        if (request !== revision) return;
+        outgoing?.remove();
+        outgoing = null;
+        fade = null;
+      };
+    }
+
     schedule();
   }
 
-  toggle.hidden = false;
-  toggle.addEventListener('click', () => setPaused(!paused));
+  button.addEventListener('click', () => {
+    // Finish any crossfade so the photo and open dialog agree.
+    settle();
+    openCake(current, button);
+  });
 
-  // A deliberate form choice takes priority over the slideshow.
-  function showChosenDesign(event) {
+  dialog.addEventListener('close', schedule);
+
+  // A form selection immediately shows that design. Automatic slides
+  // never change the visitor's actual choice in the enquiry form.
+  form.addEventListener('change', event => {
     const input = event.target;
     if (!input.matches('input[name="studio-design"][data-preview]')) return;
 
     const file = input.dataset.preview.split('/').pop();
-    const cake = cakes.find(item => item.file === file);
-    if (!cake) return;
-
-    setPaused(true);
-    show(cake);
-  }
-
-  // Click also catches a visitor choosing the already-checked first option.
-  form.addEventListener('click', showChosenDesign);
-  form.addEventListener('change', event => {
-    if (event.target.matches('input[name="studio-design"]') && !paused) {
-      showChosenDesign(event);
-    }
+    const cake = cakes.find(item => `${item[1]}.jpg` === file);
+    if (cake) show(cake);
   });
 
-  document.addEventListener('visibilitychange', schedule);
-  motion.addEventListener('change', () => setPaused(motion.matches));
-  setPaused(paused);
+  function resetTimer() {
+    settle();
+    schedule();
+  }
+
+  document.addEventListener('visibilitychange', resetTimer);
+  motion.addEventListener('change', resetTimer);
+
+  updateCaption(slide, current);
+  button.setAttribute('aria-label', `View ${current[0]} cake details`);
+  schedule();
 }
