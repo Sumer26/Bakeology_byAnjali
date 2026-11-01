@@ -4,9 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f0e9">
+  <script src="js/features.js"></script>
   <script>
   (() => {
-    let preference = null;
+  if (window.BAKEOLOGY_FEATURES?.afterHours !== true) {
+    document.documentElement.dataset.theme = 'light';
+    document.documentElement.style.colorScheme = 'light';
+    document.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', '#f6f1e9');
+    return;
+  }
+
+  let preference = null;
 
     try {
       const saved = localStorage.getItem('bakeology.theme.v1');
