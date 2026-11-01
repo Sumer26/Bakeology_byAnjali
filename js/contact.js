@@ -1,6 +1,8 @@
 import { whatsapp } from './config.js';
 import { initialiseCakePicker } from './enquiry-cakes.js';
+import { initialiseInspiration } from './enquiry-inspiration.js';
 const form = document.getElementById('studio-form');
+initialiseInspiration(form);
 const cakePicker = initialiseCakePicker(form);
 
 const steps = [
@@ -121,9 +123,7 @@ back.addEventListener('click', () => {
   show(current - 1, true);
 });
 
-form.addEventListener('input', event => {
-  event.target.setCustomValidity?.('');
-});
+ form.addEventListener('change', updateSummary);
 
 form.addEventListener('change', () => {
   updateSummary();

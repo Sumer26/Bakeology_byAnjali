@@ -1,3 +1,4 @@
 window.BAKEOLOGY_FEATURES = Object.freeze({
-  afterHours: false
+  afterHours: false,
+  cakeBook: true
 });
